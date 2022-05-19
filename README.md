@@ -1,0 +1,26 @@
+# DieVPN
+
+### This tool Allows you to switch between VPNs in ease and speed
+
+### Supported
+
+* `AnyConnectVPN` - Cisco
+
+## How to setup
+
+* Install requirements with pip install -r requirements.txt
+* Edit `config/template_secret.py` with your credentials, passwords are plaintext
+* Rename `config/template_secret.py` to secret.py
+
+## Usage
+
+Connect to VPN specified in `config/secret.py`
+
+```
+vpn connect name_in_credentials
+```
+
+Disconnect from any currently connected VPN
+```
+vpn disconnect
+```
