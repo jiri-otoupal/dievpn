@@ -13,14 +13,15 @@
 * Rename `config/template_secret.py` to secret.py
 
 ## Usage
+All commands need to be launched in os terminal not in Pycharm terminal
 
 Connect to VPN specified in `config/secret.py`
 
 ```
-vpn connect name_in_credentials
+dvpn connect name_in_credentials
 ```
 
 Disconnect from any currently connected VPN
 ```
-vpn disconnect
+dvpn disconnect
 ```

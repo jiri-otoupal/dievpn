@@ -1,8 +1,17 @@
 import logging
 import os
+import re
+import subprocess
+import sys
 from pathlib import Path
+from typing import Union, Any, Tuple, Match
 
-import wexpect
+from dvpn.config.secret import credentials
+
+if sys.platform == "win32":
+    import wexpect
+else:
+    import pexpect as wexpect
 
 vpn_cli_dir_path = r"C:\\Program Files (x86)\\Cisco\\Cisco AnyConnect Secure Mobility Client\\"
 
@@ -13,6 +22,7 @@ class VpnCli:
 
     def __init__(self, cli_path):
         print("\nWelcome to DieVPN\n")
+        print("Make sure to kill all VPN clients before usage, as cli would collide with it")
         self.process_pipe = None
         self.cli_path = cli_path
         print("Resetting connection for future stability")
@@ -49,10 +59,29 @@ class VpnCli:
         logging.info("".join(output))
         return "connected" in "".join(output[-3:-1]).lower()
 
-    def connect(self, creds: dict, banner: bool = False):
+    def connect(self, creds: dict, banner: bool = False) -> bool:
         print("~ Resetting connection")
         self.reset()
         if self.__connect(**creds):
             print("<Successfully Connected>")
+            return True
         else:
             print("Connection failed :(")
+            return False
+
+    @classmethod
+    def check_containing(cls, read_lines: str, searched_list: tuple) -> Union[
+        Match[str], None, Match[Union[Union[str, bytes], Any]], tuple[bool, None]]:
+        for url in searched_list:
+            return re.findall(url, read_lines)
+        return False, None
+
+    @classmethod
+    def check_accessed(cls):
+        out_dict = dict()
+        if sys.platform == "win32":
+            stdout = subprocess.check_output(["ipconfig", "/displaydns"]).decode()
+            print(stdout)
+            for key in credentials.keys():
+                out_dict[key] = VpnCli.check_containing(stdout,
+                                                        credentials[key]["urls"])  # Check if A server record error
