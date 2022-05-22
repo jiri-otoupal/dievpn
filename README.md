@@ -61,6 +61,13 @@ _(ignore / delete windows requirements pywin32 & wexpect if
 
 All commands need to be launched in os terminal not in Pycharm terminal
 
+Access all functions through gui
+```
+dvpn gui
+```
+
+or CLI 
+
 Connect to VPN specified in `config/secret.json`
 
 ```
