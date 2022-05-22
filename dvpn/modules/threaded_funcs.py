@@ -1,15 +1,15 @@
 import tkinter.messagebox
-from threading import Thread
 from tkinter import Tk, Button
 
-from dvpn.config.constants import default_title
-from dvpn.modules.tools import state_buttons, clear_buttons, connect
+from dvpn.config.constants import DEFAULT_TITLE
+from dvpn.modules.tools import clear_buttons, connect
 from dvpn.modules.vpncli import VpnCli
 
 
 def connect_threaded(window, host, instigator):
     _connect_threaded(window, host, instigator)
     # Thread(target=_connect_threaded, args=[window, host, instigator], daemon=True).start()
+    # TODO: Fix this on OSX
 
 
 def disconnect_threaded(window: Tk):
@@ -27,7 +27,7 @@ def _connect_threaded(window: Tk, host, instigator: Button):
         window.title(f"DieVPN Connected to {host}")
     else:
         instigator.config(bg="darkred")
-        window.title("Die VPN Control")
+        window.title(DEFAULT_TITLE)
         if stat[1].get("reason", False) == "invalid credentials":
             tkinter.messagebox.showerror("Invalid Credentials",
                                          f"Invalid Login Credentials for VPN {host}")
@@ -37,5 +37,5 @@ def _connect_threaded(window: Tk, host, instigator: Button):
 def _disconnect_threaded(window: Tk):
     window.title("Disconnecting")
     VpnCli.reset()
-    window.title(default_title)
+    window.title(DEFAULT_TITLE)
     clear_buttons()

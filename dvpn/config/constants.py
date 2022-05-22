@@ -3,7 +3,7 @@ from builtins import dict
 
 from dvpn.config.paths import secret_path
 
-default_title = "Die VPN Control"
+DEFAULT_TITLE = "Die VPN Control"
 
 
 class PublicVars:
@@ -23,7 +23,7 @@ class PublicVars:
     def credentials(self) -> dict:
         if not secret_path.exists():
             with open(str(secret_path), "w") as fp:
-                json.dump({}, fp, indent=1)
+                json.dump({}, fp, indent=4)
         with open(str(secret_path), "r") as fp:
             _credentials = json.load(fp)
         return _credentials

@@ -14,7 +14,7 @@ from tkinter import (
     LEFT, Menu, TOP,
 )
 
-from dvpn.config.constants import default_title, PublicVars
+from dvpn.config.constants import DEFAULT_TITLE, PublicVars
 from dvpn.config.paths import vpn_cli_file_path_osx, vpn_cli_file_path_win
 from dvpn.modules.commands import select_file
 from dvpn.modules.handles import add_credentials, load_credentials
@@ -124,7 +124,7 @@ def open_gui():
     add_btn.pack(side=LEFT)
     refresh_btn.pack(side=LEFT)
 
-    window.title(default_title)
+    window.title(DEFAULT_TITLE)
     keys = PublicVars().credentials.keys()
     window.geometry(f"300x{(len(keys) + 2) * 30}+10+20")
     for vpn_connection in keys:
