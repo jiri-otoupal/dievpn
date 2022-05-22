@@ -1,7 +1,9 @@
+import tkinter.messagebox
 from pathlib import Path
 from sys import argv
 
 import click as click
+import psutil
 
 from dvpn.config.constants import PublicVars
 from dvpn.config.paths import secret_path
@@ -52,6 +54,9 @@ def main():
                 "No Credentials Found please make sure to add your VPNs before "
                 "continuing "
                 "with dvpn gui")
+    if "anyconnect" in "".join([proc.name().lower() for proc in psutil.process_iter()]):
+        tkinter.messagebox.showwarning("AnyConnect is running",
+                                       "End other Any connect instances before usage")
     cli()
 
 
