@@ -8,12 +8,13 @@ from dvpn.modules.vpncli import VpnCli
 
 
 def connect_threaded(window, host, instigator):
-    Thread(target=_connect_threaded, args=[window, host, instigator], daemon=True).start()
+    _connect_threaded(window, host, instigator)
+    # Thread(target=_connect_threaded, args=[window, host, instigator], daemon=True).start()
 
 
 def disconnect_threaded(window: Tk):
-    Thread(target=_disconnect_threaded, args=[window], daemon=True).start()
-
+    _disconnect_threaded(window)
+    # Thread(target=_disconnect_threaded, args=[window], daemon=True).start()
 
 
 def _connect_threaded(window: Tk, host, instigator: Button):
