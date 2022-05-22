@@ -57,6 +57,7 @@ def main():
     if "anyconnect" in "".join([proc.name().lower() for proc in psutil.process_iter()]):
         tkinter.messagebox.showwarning("AnyConnect is running",
                                        "End other Any connect instances before usage")
+        exit(1)
     cli()
 
 
