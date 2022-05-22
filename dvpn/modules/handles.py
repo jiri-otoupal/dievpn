@@ -4,7 +4,8 @@ from dvpn.config.constants import PublicVars
 from dvpn.config.paths import secret_path
 
 
-def add_credentials(name: str, host: str, user: str, pwd: str, banner: bool):
+def add_credentials(cli_path: str, name: str, host: str, user: str, pwd: str,
+                    banner: bool):
     if not name:
         return False
 
@@ -19,6 +20,7 @@ def add_credentials(name: str, host: str, user: str, pwd: str, banner: bool):
             print("Invalid JSON!")
 
     credentials[name] = {
+        "cli_path": cli_path,
         "host": host,
         "username": user,
         "password": pwd,

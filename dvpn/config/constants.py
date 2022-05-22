@@ -21,11 +21,14 @@ class PublicVars:
 
     @property
     def credentials(self) -> dict:
-        fp = open(str(secret_path), "r")
-        _credentials = json.load(fp)
+        if not secret_path.exists():
+            with open(str(secret_path), "w") as fp:
+                json.dump({}, fp, indent=1)
+        with open(str(secret_path), "r") as fp:
+            _credentials = json.load(fp)
         return _credentials
 
     @credentials.setter
     def credentials(self, updated: dict):
-        fp = open(str(secret_path), "w")
-        json.dump(updated, fp, indent=4)
+        with open(str(secret_path), "w") as fp:
+            json.dump(updated, fp, indent=4)
