@@ -1,6 +1,13 @@
 # DieVPN
 
-### This tool Allows you to switch between VPNs in ease and speed
+### Tool that allows to switch between VPNs in ease and speed
+
+[![image](https://img.shields.io/pypi/v/dvpn.svg)](https://pypi.org/project/dvpn/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dvpn)](https://pypi.org/project/dvpn/)
+
+[![Build Status](https://travis-ci.com/jiri-otoupal/dievpn.svg?branch=master)](https://travis-ci.com/github/jiri-otoupal/dievpn)
+[![Downloads](https://pepy.tech/badge/dvpn)](https://pepy.tech/project/dvpn)
+
 
 ### Supported
 
@@ -18,11 +25,17 @@
 
 * 3.7+
 
-## How to install
+## Installing
 
-Simply type this to terminal:
+Install and update using [pip](https://pip.pypa.io/en/stable/quickstart/):
 
-`pip3 install dvpn` or `pip install dvpn`depends on your system pip binary name.
+```bash
+pip install dvpn
+
+or
+
+pip3 install dvpn
+```
 
 ## How to set up with GUI
 
