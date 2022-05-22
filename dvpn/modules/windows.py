@@ -57,10 +57,10 @@ def new_vpn_window(root):
     lbl_user = Label(window, text="Username")
     text_user = Entry(window, textvariable=user)
     lbl_pwd = Label(window, text="Password")
-    text_pwd = Entry(window, textvariable=pwd)
+    text_pwd = Entry(window, textvariable=pwd, show="*")
     banner = Checkbutton(window, text="Has Banner", variable=banner_var)
 
-    submit_btn = Button(window, text="Apply", foreground="white", bg="gray")
+    submit_btn = Button(window, text="Apply", foreground="black", bg="lightgray")
 
     lbl_clipath.pack(side=LEFT)
     file_path.pack(expand=True, fill="x", side=LEFT)
