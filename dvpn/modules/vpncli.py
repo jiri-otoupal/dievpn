@@ -22,8 +22,6 @@ class VpnCli:
         )
         self.process_pipe = None
         self.cli_path = cli_path
-        print("Resetting connection for future stability")
-        self.reset()
 
     def get_connected_vpn(self):
         stdout = subprocess.check_output([self.cli_path, "stats"]).decode()
