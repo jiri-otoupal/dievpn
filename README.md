@@ -10,7 +10,7 @@
 
 * Install requirements with pip install -r requirements.txt
 * Edit `config/template_secret.json` with your credentials, passwords are plaintext
-* Rename `config/template_secret.json` to secret.py
+* Rename `config/template_secret.json` to secret.json
 
 ## Usage
 All commands need to be launched in os terminal not in Pycharm terminal

@@ -1,2 +1,2 @@
-global-exclude secret.py
-prune secret.py
+global-exclude secret.json
+prune secret.json
