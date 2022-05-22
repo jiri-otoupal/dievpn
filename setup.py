@@ -35,7 +35,7 @@ setup(
     license=about["__license__"],
     zip_safe=True,
     entry_points={
-        "console_scripts": ["dvpn=dvpn.main"],
+        "console_scripts": ["dvpn=dvpn.main:main"],
     },
     classifiers=[
         "Development Status :: 4 - Beta",

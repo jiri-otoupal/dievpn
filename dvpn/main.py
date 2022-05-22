@@ -37,7 +37,7 @@ def gui():
     open_gui()
 
 
-if __name__ == '__main__':
+def main():
     if "gui" not in argv:
         if not secret_path.exists():
             print(
