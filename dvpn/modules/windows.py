@@ -16,9 +16,9 @@ from tkinter import (
 
 from dvpn.config.constants import default_title, PublicVars
 from dvpn.config.paths import vpn_cli_file_path_osx, vpn_cli_file_path_win
-from dvpn.modules.threaded_funcs import connect_threaded, disconnect_threaded
 from dvpn.modules.commands import select_file
 from dvpn.modules.handles import add_credentials
+from dvpn.modules.threaded_funcs import connect_threaded, disconnect_threaded
 from dvpn.modules.tools import buttons, reopen
 
 
@@ -90,10 +90,6 @@ def new_vpn_window(root):
     )
 
     window.mainloop()
-
-
-if __name__ == "__main__":
-    new_vpn_window()
 
 
 def open_gui():
