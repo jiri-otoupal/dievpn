@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
     python_requires=">=3.6,<4",
     install_requires=["wexpect==4.0.0; sys_platform == 'win32'",
-                      "pexpect==4.0.0; sys_platform != 'win32'",
+                      "pexpect==4.8.0; sys_platform != 'win32'",
                       "click==8.1.3"],
     extras_require={
         "dev": ["black==22.*"],
