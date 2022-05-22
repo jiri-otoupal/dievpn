@@ -4,11 +4,7 @@
 
 [![image](https://img.shields.io/pypi/v/dvpn.svg)](https://pypi.org/project/dvpn/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dvpn)](https://pypi.org/project/dvpn/)
-
-[![Build Status](https://travis-ci.com/jiri-otoupal/dievpn.svg?branch=master)](https://travis-ci.com/github/jiri-otoupal/dievpn)
 [![Downloads](https://pepy.tech/badge/dvpn)](https://pepy.tech/project/dvpn)
-
-
 ### Supported
 
 #### VPNs
