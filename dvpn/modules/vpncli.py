@@ -41,6 +41,7 @@ class VpnCli:
             if os.name == "nt"
             else str(vpn_cli_file_path_osx),
             args=["disconnect"],
+            encoding="utf-8"
         )
         output = pipe.readlines()
 
@@ -52,7 +53,8 @@ class VpnCli:
     def __connect(self, host, username, password, **kwargs):
         print(f">> Connecting to {host}")
         self.process_pipe = wexpect.spawn(
-            command=self.cli_path, args=["connect", f"{host}"]
+            command=self.cli_path, args=["connect", f"{host}"],
+            encoding="utf-8"
         )
 
         print("     ... Waiting for VPN to complete its chores")
