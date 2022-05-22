@@ -3,4 +3,4 @@
 /build/
 /dist/
 /dvpn/config/secret.json
-build-all.cmdgir
+build-all.cmd
