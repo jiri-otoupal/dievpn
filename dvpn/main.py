@@ -1,20 +1,16 @@
+import json
 from pathlib import Path
 from threading import Thread
-from tkinter import Tk, Button
+from tkinter import Tk, Button, Menu
 
 import click as click
 
-from modules.tools import buttons, state_btns, clear_btns
+from dvpn.config.constants import default_title, PublicVars
+from dvpn.config.paths import secret_path
+from dvpn.modules.windows import new_vpn_window
 
-try:
-    from dvpn.config.secret import credentials
-except ModuleNotFoundError:
-    print(f"Please first Create secret.py according to README at {str(Path(__file__).resolve().parent / 'config')}")
-    exit(1)
-
-from modules.vpncli import VpnCli, vpn_cli_file_path
-
-default_title = "Die VPN Control"
+from dvpn.modules.tools import buttons, state_btns, clear_btns
+from dvpn.modules.vpncli import VpnCli, vpn_cli_file_path
 
 
 @click.group()
@@ -30,7 +26,7 @@ def _connect(host):
 
 def connect(host) -> bool:
     vpncli = VpnCli(str(vpn_cli_file_path))
-    return vpncli.connect(credentials[host])
+    return vpncli.connect(PublicVars().credentials[host])
 
 
 @cli.command(name="disconnect")
@@ -45,18 +41,25 @@ def _auto():
 
 
 @cli.command()
-def dialog():
+def gui():
+    # TODO: Refresh
     print("Make sure to kill all VPN clients before usage, as cli would collide with it")
     window = Tk()
     # add widgets here
+    main_menu = Menu(window, tearoff=0)
+    main_menu.add_command(label="Add VPN", command=lambda: new_vpn_window(window))
+    main_menu.add_command(label="Select CLI", command=None)
+    window.config(menu=main_menu)
 
     window.title(default_title)
 
-    keys = credentials.keys()
+    keys = PublicVars().credentials.keys()
     window.geometry(f"300x{(len(keys) + 1) * 35}+10+20")
     for vpn_connection in keys:
         btn = Button(text=vpn_connection.capitalize(), bg="darkgray", fg="white")
-        btn.bind('<Button-1>', lambda event, con=vpn_connection, tbtn=btn: connect_threaded(window, con, tbtn))
+        btn.bind('<Button-1>',
+                 lambda event, con=vpn_connection, tbtn=btn: connect_threaded(window, con,
+                                                                              tbtn))
         buttons.append(btn)
         btn.pack(expand=True, fill="x")
     btn = Button(text="Disconnect", bg="black", fg="white",
@@ -95,4 +98,16 @@ def _disconnect_threaded(window: Tk):
 
 
 if __name__ == '__main__':
+
+    if not secret_path.exists():
+        print(
+            f"Please first Create secret.json according to README at"
+            f" {str(Path(__file__).resolve().parent / 'config')} or use dvpn gui")
+        exit(1)
+    else:
+        PublicVars()
+
+    if len(PublicVars().credentials.keys()) == 0:
+        print("No Credentials Found please make sure to add your VPNs before continuing "
+              "with dvpn gui")
     cli()

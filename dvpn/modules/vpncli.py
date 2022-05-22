@@ -6,14 +6,17 @@ import sys
 from pathlib import Path
 from typing import Union, Any, Tuple, Match
 
-from dvpn.config.secret import credentials
+from dvpn.config.constants import PublicVars
 
 if sys.platform == "win32":
     import wexpect
 else:
     import pexpect as wexpect
 
-vpn_cli_dir_path = r"C:\\Program Files (x86)\\Cisco\\Cisco AnyConnect Secure Mobility Client\\"
+vpn_cli_dir_path = r"C:\\" \
+                   r"Program Files (x86)\\" \
+                   r"Cisco\\" \
+                   r"Cisco AnyConnect Secure Mobility Client\\"
 
 vpn_cli_file_path = Path(f"{vpn_cli_dir_path}\\vpncli{'.exe' if os.name == 'nt' else ''}")
 
@@ -22,16 +25,26 @@ class VpnCli:
 
     def __init__(self, cli_path):
         print("\nWelcome to DieVPN\n")
-        print("Make sure to kill all VPN clients before usage, as cli would collide with it")
+        print(
+            "Make sure to kill all VPN clients before usage, as cli would collide with it")
         self.process_pipe = None
         self.cli_path = cli_path
         print("Resetting connection for future stability")
         self.reset()
 
+    def get_connected_vpn(self):
+        stdout = subprocess.check_output([self.cli_path, "stats"]).decode()
+        # Match and remove dot on end
+        vpn_name_index = re.findall(".*onnected to*. .*", stdout)[0][:-1]
+
+        return vpn_name_index.split(" ")[1]
+
     @classmethod
     def reset(cls, cli_path=None):
         print("...Disconnecting")
-        pipe = wexpect.spawn(command=str(vpn_cli_file_path) if cli_path is None else cli_path, args=["disconnect"])
+        pipe = wexpect.spawn(
+            command=str(vpn_cli_file_path) if cli_path is None else cli_path,
+            args=["disconnect"])
         output = pipe.readlines()
 
         if "disconnected" in "".join(output[-3:-1]).lower():
@@ -41,7 +54,8 @@ class VpnCli:
 
     def __connect(self, host, username, password, **kwargs):
         print(f">> Connecting to {host}")
-        self.process_pipe = wexpect.spawn(command=self.cli_path, args=["connect", f'{host}'])
+        self.process_pipe = wexpect.spawn(command=self.cli_path,
+                                          args=["connect", f'{host}'])
 
         print("     ... Waiting for VPN to complete its chores")
         self.process_pipe.expect(".*sername*.")
@@ -82,6 +96,8 @@ class VpnCli:
         if sys.platform == "win32":
             stdout = subprocess.check_output(["ipconfig", "/displaydns"]).decode()
             print(stdout)
+            credentials = PublicVars().credentials
             for key in credentials.keys():
                 out_dict[key] = VpnCli.check_containing(stdout,
-                                                        credentials[key]["urls"])  # Check if A server record error
+                                                        credentials[key][
+                                                            "urls"])  # Check if A server record error

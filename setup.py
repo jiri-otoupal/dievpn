@@ -14,10 +14,6 @@ with open(os.path.join(here, "dvpn", "__version__.py")) as f:
 with open("README.md", "r") as f:
     readme = f.read()
 
-excluded = ["secret.py"]
-
-# package configuration - for reference see:
-# https://setuptools.readthedocs.io/en/latest/setuptools.html#id9
 setup(
     name=about["__title__"],
     description=about["__description__"],
@@ -27,10 +23,11 @@ setup(
     author=about["__author__"],
     author_email=about["__author_email__"],
     url=about["__url__"],
-    packages=find_packages(exclude=["secret.py"]),
+    packages=find_packages(),
     include_package_data=True,
     python_requires=">=3.6,<4",
-    install_requires=["wexpect==4.0.0; sys_platform == 'win32'", "pexpect==4.0.0; sys_platform != 'win32'",
+    install_requires=["wexpect==4.0.0; sys_platform == 'win32'",
+                      "pexpect==4.0.0; sys_platform != 'win32'",
                       "click==8.1.3"],
     extras_require={
         "dev": ["black==22.*"],
@@ -38,7 +35,7 @@ setup(
     license=about["__license__"],
     zip_safe=True,
     entry_points={
-        "console_scripts": ["dvpn=dvpn:main"],
+        "console_scripts": ["dvpn=dvpn.main"],
     },
     classifiers=[
         "Development Status :: 4 - Beta",

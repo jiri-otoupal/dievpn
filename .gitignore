@@ -1,3 +1,5 @@
-/dvpn/config/secret.py
 /venv/
 /build.cmd
+/build/
+/dist/
+/dvpn/config/secret.json
