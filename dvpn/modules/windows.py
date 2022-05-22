@@ -17,7 +17,7 @@ from tkinter import (
 from dvpn.config.constants import default_title, PublicVars
 from dvpn.config.paths import vpn_cli_file_path_osx, vpn_cli_file_path_win
 from dvpn.modules.commands import select_file
-from dvpn.modules.handles import add_credentials
+from dvpn.modules.handles import add_credentials, load_credentials
 from dvpn.modules.threaded_funcs import connect_threaded, disconnect_threaded
 from dvpn.modules.tools import buttons, reopen
 
@@ -60,7 +60,9 @@ def new_vpn_window(root):
     text_pwd = Entry(window, textvariable=pwd, show="*")
     banner = Checkbutton(window, text="Has Banner", variable=banner_var)
 
-    submit_btn = Button(window, text="Apply", foreground="black", bg="lightgray")
+    btn_frame = Frame(window)
+    submit_btn = Button(btn_frame, text="Apply", foreground="black", bg="lightgray")
+    load_btn = Button(btn_frame, text="Load", foreground="black", bg="lightgray")
 
     lbl_clipath.pack(side=LEFT)
     file_path.pack(expand=True, fill="x", side=LEFT)
@@ -75,7 +77,9 @@ def new_vpn_window(root):
     lbl_pwd.pack()
     text_pwd.pack(expand=True)
     banner.pack(expand=True)
-    submit_btn.pack(expand=True, fill="x")
+    submit_btn.pack(expand=True, fill="x", side=LEFT)
+    load_btn.pack(side=LEFT)
+    btn_frame.pack(fill="x")
 
     submit_btn.bind(
         "<Button-1>",
@@ -86,6 +90,17 @@ def new_vpn_window(root):
             user.get(),
             pwd.get(),
             banner_var.get(),
+        ),
+    )
+    load_btn.bind(
+        "<Button-1>",
+        lambda event: load_credentials(
+            name.get(),
+            file_name,
+            host,
+            user,
+            pwd,
+            banner_var,
         ),
     )
 
@@ -100,8 +115,8 @@ def open_gui():
     menu = Frame(window)
     menu.pack(fill="x", side=TOP)
 
-    add_btn = Button(menu, text="Add VPN", command=lambda: new_vpn_window(window),
-                     fg="black",
+    add_btn = Button(menu, text="Add/Edit VPN", command=lambda: new_vpn_window(window),
+                     fg="black", padx=5,
                      bg="lightgray", border=0)
     refresh_btn = Button(menu, text="Refresh", command=lambda: reopen(window),
                          fg="black", bg="lightgray", border=0)

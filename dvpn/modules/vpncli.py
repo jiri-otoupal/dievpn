@@ -50,11 +50,11 @@ class VpnCli:
         else:
             print("Not Connected")
 
-    def __connect(self, host, username, password, **kwargs):
+    def __connect(self, host, username, password, **kwargs) -> dict:
         print(f">> Connecting to {host}")
         self.process_pipe = wexpect.spawn(
             command=self.cli_path, args=["connect", f"{host}"],
-            encoding="utf-8"
+            encoding="utf-8", timeout=15
         )
 
         print("     ... Waiting for VPN to complete its chores")
@@ -72,17 +72,25 @@ class VpnCli:
         output = self.process_pipe.readlines()
 
         logging.info("".join(output))
-        return "connected" in "".join(output[-3:-1]).lower()
+        connected = "connected" in "".join(output[-3:-1]).lower()
+        return {"connected": connected, "reason": "VPN Error", "log": output}
 
-    def connect(self, creds: dict, banner: bool = False) -> bool:
+    def connect(self, creds: dict) -> (bool, dict):
         print("~ Resetting connection")
         self.reset()
-        if self.__connect(**creds):
+
+        try:
+            stat = self.__connect(**creds)
+        except wexpect.TIMEOUT as ex:
+            stat = {"reason": "invalid credentials"}
+
+        if stat.get("connected", False):
             print("<Successfully Connected>")
-            return True
+            return True, stat
         else:
             print("Connection failed :(")
-            return False
+            print(f"Reason {''.join(stat.get('log',['Unable to read stdout']))}")
+            return False, stat
 
     @classmethod
     def check_containing(

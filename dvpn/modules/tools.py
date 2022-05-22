@@ -22,7 +22,13 @@ def reopen(last_window: Tk):
     open_gui()
 
 
-def connect(host) -> bool:
+def connect(host) -> (bool, dict):
     creds = PublicVars().credentials[host]
     vpncli = VpnCli(str(creds["cli_path"]))
-    return vpncli.connect(creds)
+    try:
+        return vpncli.connect(creds)
+    except Exception as ex:
+        print("DieVpn encountered problem with anyconnect, can be cause by stucked "
+              "ovpn agent from previous instance or already running cli try to check"
+              " for other cli or anyconnect processes or reboot computer")
+        return False, {"exception": str(ex)}
