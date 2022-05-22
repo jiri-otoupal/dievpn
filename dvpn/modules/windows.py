@@ -11,7 +11,7 @@ from tkinter import (
     Toplevel,
     Frame,
     RIGHT,
-    LEFT, Menu,
+    LEFT, Menu, TOP,
 )
 
 from dvpn.config.constants import default_title, PublicVars
@@ -96,21 +96,30 @@ def open_gui():
     print("Make sure to kill all VPN clients before usage, as cli would collide with it")
     window = Tk()
     # add widgets here
-    main_menu = Menu(window, tearoff=0)
-    main_menu.add_command(label="Add VPN", command=lambda: new_vpn_window(window))
-    main_menu.add_command(label="Refresh", command=lambda: reopen(window))
-    window.config(menu=main_menu)
+
+    menu = Frame(window)
+    menu.pack(fill="x", side=TOP)
+
+    add_btn = Button(menu, text="Add VPN", command=lambda: new_vpn_window(window),
+                     fg="black",
+                     bg="lightgray", border=0)
+    refresh_btn = Button(menu, text="Refresh", command=lambda: reopen(window),
+                         fg="black", bg="lightgray", border=0)
+
+    add_btn.pack(side=LEFT)
+    refresh_btn.pack(side=LEFT)
+
     window.title(default_title)
     keys = PublicVars().credentials.keys()
-    window.geometry(f"300x{(len(keys) + 1) * 35}+10+20")
+    window.geometry(f"300x{(len(keys) + 2) * 30}+10+20")
     for vpn_connection in keys:
-        btn = Button(text=vpn_connection.capitalize(), bg="darkgray", fg="white")
+        btn = Button(text=vpn_connection.capitalize(), bg="gray", fg="black")
         btn.bind('<Button-1>',
                  lambda event, con=vpn_connection, tbtn=btn: connect_threaded(window, con,
                                                                               tbtn))
         buttons.append(btn)
         btn.pack(expand=True, fill="x")
-    btn = Button(text="Disconnect", bg="black", fg="white",
+    btn = Button(text="Disconnect", fg="black",
                  command=lambda: disconnect_threaded(window))
     btn.pack(expand=True, fill="x", pady=5)
     buttons.append(btn)

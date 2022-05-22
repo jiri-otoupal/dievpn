@@ -53,3 +53,7 @@ def main():
                 "continuing "
                 "with dvpn gui")
     cli()
+
+
+if __name__ == "__main__":
+    main()

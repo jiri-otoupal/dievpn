@@ -68,6 +68,7 @@ class VpnCli:
             self.process_pipe.sendline("y")
 
         output = self.process_pipe.readlines()
+
         logging.info("".join(output))
         return "connected" in "".join(output[-3:-1]).lower()
 
@@ -83,7 +84,7 @@ class VpnCli:
 
     @classmethod
     def check_containing(
-        cls, read_lines: str, searched_list: tuple
+            cls, read_lines: str, searched_list: tuple
     ) -> Union[
         Match[str], None, Match[Union[Union[str, bytes], Any]], tuple[bool, None]
     ]:

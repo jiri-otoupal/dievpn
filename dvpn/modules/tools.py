@@ -13,7 +13,7 @@ def state_buttons(state_out):
 
 def clear_buttons():
     for btn in buttons[:-1]:
-        btn.config(bg="darkgray", fg="white")
+        btn.config(bg="lightgray", fg="black")
 
 
 def reopen(last_window: Tk):
