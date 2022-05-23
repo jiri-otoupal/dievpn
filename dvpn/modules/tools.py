@@ -13,7 +13,11 @@ def state_buttons(state_out):
 
 def clear_buttons():
     for btn in buttons[:-1]:
-        btn.config(bg="lightgray", fg="black")
+        try:
+            btn.config(bg="lightgray", fg="black")
+        except Exception:
+            # Just tkinter and its sometime problem with config
+            pass
 
 
 def reopen(last_window: Tk):

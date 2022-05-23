@@ -87,7 +87,7 @@ class VpnCli:
             return True, stat
         else:
             print("Connection failed :(")
-            print(f"Reason {''.join(stat.get('log',['Unable to read stdout']))}")
+            print(f"Reason {''.join(stat.get('log', ['Unable to read stdout']))}")
             return False, stat
 
     @classmethod
@@ -97,17 +97,32 @@ class VpnCli:
         Match[str], None, Match[Union[Union[str, bytes], Any]], tuple[bool, None]
     ]:
         for url in searched_list:
-            return re.findall(url, read_lines)
+            return re.search(url, read_lines)
         return False, None
+
+    @classmethod
+    def dns_records(cls):
+        if sys.platform == "win32":
+            return subprocess.check_output(["ipconfig", "/displaydns"]).decode()
+        elif sys.platform == "darwin":
+            return subprocess.check_output(["ipconfig", "/displaydns"]).decode()
+
+    @classmethod
+    def flush_dns(cls):
+        if sys.platform == "win32":
+            return subprocess.check_output(["ipconfig", "/flushdns"]).decode()
+        elif sys.platform == "darwin":
+            ...
 
     @classmethod
     def check_accessed(cls):
         out_dict = dict()
         if sys.platform == "win32":
-            stdout = subprocess.check_output(["ipconfig", "/displaydns"]).decode()
+            stdout = cls.dns_records()
             print(stdout)
             credentials = PublicVars().credentials
             for key in credentials.keys():
                 out_dict[key] = VpnCli.check_containing(
                     stdout, credentials[key]["urls"]
                 )  # Check if A server record error
+            print(out_dict)
