@@ -33,6 +33,10 @@ or
 pip3 install dvpn
 ```
 
+## MacOs additional commands
+Install tkinter if you do not have it installed with
+`brew install python-tk`
+
 ## How to set up with GUI
 
 * Use `dvpn gui` in terminal to add your VPNs, passwords and usernames are stored in plaintext so be sure to have disk
