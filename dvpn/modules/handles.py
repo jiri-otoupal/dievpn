@@ -29,8 +29,13 @@ def add_credentials(cli_path: str, name: str, host: str, user: str, pwd: str,
         "banner": banner,
     }
 
-    PublicVars().credentials = credentials
+    try:
+        PublicVars().credentials = credentials
+    except PermissionError:
+        print(f"Failed to save due to permission error {str(secret_path)}")
+        return False
 
+    print("Saved Successfully")
     return True
 
 
@@ -49,6 +54,9 @@ def load_credentials(name: str, cli_path: StringVar, host: StringVar, user: Stri
         except JSONDecodeError:
             print("Invalid JSON!")
             return False
+        except PermissionError:
+            print(f"Failed to load due to permission error {str(secret_path)}")
+            return False
 
     if credentials is None:
         return False
@@ -58,5 +66,5 @@ def load_credentials(name: str, cli_path: StringVar, host: StringVar, user: Stri
     user.set(credentials.get("username", ""))
     pwd.set(credentials.get("password", ""))
     banner.set(credentials.get("banner", False))
-
+    print("Saved Successfully")
     return True
