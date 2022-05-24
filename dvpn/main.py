@@ -60,7 +60,7 @@ def main():
                 "continuing "
                 "with dvpn gui")
 
-    processes = [proc.name().lower() if get_status(proc) != psutil.STATUS_ZOMBIE else None
+    processes = [proc.name().lower() if get_status(proc) != psutil.STATUS_ZOMBIE else ""
                  for
                  proc in psutil.process_iter()]
     if "anyconnect" in "".join(processes):
