@@ -39,6 +39,11 @@ def gui():
     open_gui()
 
 
+def get_status(p):
+    return (p.status() if hasattr(p.status, '__call__'
+                                  ) else p.status)
+
+
 def main():
     if "gui" not in argv:
         if not secret_path.exists():
@@ -54,7 +59,11 @@ def main():
                 "No Credentials Found please make sure to add your VPNs before "
                 "continuing "
                 "with dvpn gui")
-    if "anyconnect" in "".join([proc.name().lower() for proc in psutil.process_iter()]):
+
+    processes = [proc.name().lower() if get_status(proc) != psutil.STATUS_ZOMBIE else None
+                 for
+                 proc in psutil.process_iter()]
+    if "anyconnect" in "".join(processes):
         tkinter.messagebox.showwarning("AnyConnect is running",
                                        "End other Any connect instances before usage")
         exit(1)
