@@ -1,4 +1,3 @@
-import json
 import tkinter.messagebox
 from json import JSONDecodeError
 from tkinter import StringVar, BooleanVar
