@@ -33,6 +33,7 @@ class VpnCli:
     @classmethod
     def reset(cls, cli_path=None):
         print("...Disconnecting")
+        # Wexpect NEEDS to be run in normal terminal Pycharm one will FREEZE !
         # TODO: fix this for more types of vpn supported
         pipe = wexpect.spawn(
             command=str(vpn_cli_file_path_win)
