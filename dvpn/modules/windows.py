@@ -1,4 +1,5 @@
 import os
+from idlelib.tooltip import Hovertip
 from pathlib import Path
 from tkinter import (
     Tk,
@@ -49,8 +50,8 @@ def new_vpn_window(root):
             file_tmp,
         ),
     )
-    lbl_clipath = Label(file_frame, text="VPN Cli Path")
-    lbl_name = Label(window, text="Name")
+    lbl_clipath = Label(window, text="VPN Cli Path")
+    lbl_name = Label(window, text="Name(*)")
     text_name = Entry(window, textvariable=name)
     lbl_host = Label(window, text="Host")
     text_host = Entry(window, textvariable=host)
@@ -58,13 +59,14 @@ def new_vpn_window(root):
     text_user = Entry(window, textvariable=user)
     lbl_pwd = Label(window, text="Password")
     text_pwd = Entry(window, textvariable=pwd, show="*")
-    banner = Checkbutton(window, text="Has Banner", variable=banner_var)
+    banner = Checkbutton(window, text="Has Banner(Popup at VPN login)", variable=banner_var)
 
     btn_frame = Frame(window)
     submit_btn = Button(btn_frame, text="Apply", foreground="black", bg="lightgray")
     load_btn = Button(btn_frame, text="Load", foreground="black", bg="lightgray")
+    Hovertip(load_btn, "Loads data into fields from Name acting like a key for a database")
 
-    lbl_clipath.pack(side=LEFT)
+    lbl_clipath.pack()
     file_path.pack(expand=True, fill="x", side=LEFT)
     fp_btn.pack(side=RIGHT)
     file_frame.pack(expand=True, fill="x")
@@ -128,14 +130,16 @@ def open_gui():
     keys = PublicVars().credentials.keys()
     window.geometry(f"300x{(len(keys) + 2) * 30}+10+20")
     for vpn_connection in keys:
-        btn = Button(text=vpn_connection.capitalize(), bg="gray", fg="black")
+        key = vpn_connection.capitalize()
+        btn = Button(text=key, bg="gray", fg="black")
         btn.bind('<Button-1>',
                  lambda event, con=vpn_connection, tbtn=btn: connect_threaded(window, con,
                                                                               tbtn))
-        buttons.append(btn)
+        buttons[key] = btn
         btn.pack(expand=True, fill="x")
-    btn = Button(text="Disconnect", fg="black",
+    key = "Disconnect"
+    btn = Button(text=key, fg="black",
                  command=lambda: disconnect_threaded(window))
     btn.pack(expand=True, fill="x", pady=5)
-    buttons.append(btn)
+    buttons[key] = btn
     window.mainloop()
