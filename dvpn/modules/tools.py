@@ -3,18 +3,20 @@ from tkinter import Tk
 from dvpn.config.constants import PublicVars
 from dvpn.modules.vpncli import VpnCli
 
-buttons = []
+buttons = dict()
 
 
 def state_buttons(state_out):
-    for btn in buttons:
+    for btn in buttons.values():
         btn.config(state=state_out)
 
 
 def clear_buttons():
-    for btn in buttons[:-1]:
+    tmp = dict(buttons)
+    tmp.pop("Disconnect")
+    for btn in tmp.items():
         try:
-            btn.config(bg="lightgray", fg="black")
+            btn[1].config(bg="lightgray", fg="black", text=btn[0])
         except Exception:
             # Just tkinter and its sometime problem with config
             pass

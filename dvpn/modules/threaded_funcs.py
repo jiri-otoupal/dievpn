@@ -23,10 +23,10 @@ def _connect_threaded(window: Tk, host, instigator: Button):
     clear_buttons()
     stat = connect(host)
     if stat[0]:
-        instigator.config(bg="darkgreen")
+        instigator.config(bg="darkgreen", text=instigator.cget("text") + " (Connected)")
         window.title(f"DieVPN Connected to {host}")
     else:
-        instigator.config(bg="darkred")
+        instigator.config(bg="darkred", text=instigator.cget("text") + " (Failed)")
         window.title(DEFAULT_TITLE)
         if stat[1].get("reason", False) == "invalid credentials":
             tkinter.messagebox.showerror("Invalid Credentials",
