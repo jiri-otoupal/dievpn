@@ -13,6 +13,7 @@ from tkinter import (
     RIGHT,
     LEFT, Menu, TOP,
 )
+from tkinter.ttk import Combobox
 
 from dvpn.config.constants import DEFAULT_TITLE, PublicVars
 from dvpn.config.paths import vpn_cli_file_path_osx, vpn_cli_file_path_win
@@ -25,6 +26,9 @@ from dvpn.modules.tools import buttons, reopen
 def new_vpn_window(root):
     window = Toplevel(root)
     window.title("Modify or add VPNs")
+
+    vpn_type = StringVar()
+    vpn_type.set("anyconnect")
 
     file_name = StringVar()
     file_name.set(
@@ -39,6 +43,10 @@ def new_vpn_window(root):
     banner_var = BooleanVar()
 
     window.geometry(f"300x300+10+20")
+
+    vpn_type_box = Combobox(window, textvariable=vpn_type,
+                            values=["anyconnect", "viscosity"])
+    vpn_type_box.pack(side=TOP)
 
     file_path = Entry(file_frame, textvariable=file_name)
     fp_btn = Button(
@@ -84,6 +92,7 @@ def new_vpn_window(root):
     submit_btn.bind(
         "<Button-1>",
         lambda event: add_credentials(
+            vpn_type.get(),
             file_name.get(),
             name.get(),
             host.get(),
@@ -96,6 +105,7 @@ def new_vpn_window(root):
         "<Button-1>",
         lambda event: load_credentials(
             name.get(),
+            vpn_type,
             file_name,
             host,
             user,

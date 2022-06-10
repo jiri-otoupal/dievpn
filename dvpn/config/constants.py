@@ -3,6 +3,8 @@ from builtins import dict
 
 from dvpn.config.paths import secret_path
 
+CONNECTED_CLI = None
+
 DEFAULT_TITLE = "Die VPN Control"
 
 

@@ -1,9 +1,10 @@
 import tkinter.messagebox
 from tkinter import Tk, Button
 
-from dvpn.config.constants import DEFAULT_TITLE
+import dvpn
+from dvpn.config.constants import DEFAULT_TITLE, PublicVars
 from dvpn.modules.tools import clear_buttons, connect
-from dvpn.modules.vpncli import VpnCli
+from dvpn.vpns.anyconnect import AnyConnectCLI
 
 
 def connect_threaded(window, host, instigator):
@@ -21,7 +22,13 @@ def _connect_threaded(window: Tk, host, instigator: Button):
     window.title(f"DieVPN Connecting to {host}")
     # state_buttons("disabled")
     clear_buttons()
-    stat = connect(host)
+    record = PublicVars().credentials.get(host)
+    cli = None
+    if record.get("vpn_type") == "anyconnect":
+        cli = AnyConnectCLI
+
+    stat = connect(cli, host)
+    dvpn.config.constants.CONNECTED_CLI = cli
     if stat[0]:
         instigator.config(bg="darkgreen")
         window.title(f"DieVPN Connected to {host}")
@@ -36,6 +43,8 @@ def _connect_threaded(window: Tk, host, instigator: Button):
 
 def _disconnect_threaded(window: Tk):
     window.title("Disconnecting")
-    VpnCli.reset()
+    cli = dvpn.config.constants.CONNECTED_CLI
+    if cli is not None:
+        cli.reset()
     window.title(DEFAULT_TITLE)
     clear_buttons()
