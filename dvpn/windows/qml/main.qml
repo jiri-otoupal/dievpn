@@ -70,12 +70,11 @@ ApplicationWindow {
                         }
                     }
                 }
-                Button {
+
+                BlueButton {
                     Layout.fillWidth: true
-                    Material.background: "#70b0ff"
-                    Material.foreground: "#F8F8F8"
-                    width: parent.width
                     text: "Apply"
+
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -105,101 +104,25 @@ ApplicationWindow {
                 ListView {
                     model: 20
                     spacing: 6
-                    delegate: RowLayout {
-                        width: parent.width
+                    delegate: VPNRow {
                         Layout.fillWidth: true
 
-                        Rectangle {
-                            Layout.fillWidth: true
-                            width: parent.width
-                            color :"#2f334d"
-                            height: 90
-
-                            ColumnLayout {
-                                spacing: 0
-                                width: parent.width
-                                Layout.fillWidth: true
-
-
-                                Button {
-                                    Material.background: "#717CB4"
-                                    Material.foreground: "#F8F8F8"
-
-                                    width: parent.width
-                                    Layout.fillWidth: true
-                                    text: "VPN " + (index + 1)
-
-                                    Image {
-                                        id: conn_status
-                                        antialiasing: true
-                                        source: "qrc:/images/disconnected.png"
-                                        transform: [Scale {
-                                            yScale: 0.6
-                                            xScale: 0.6
-                                        }]
-                                        anchors.left: parent.left
-                                        anchors.top: parent.top
-                                        anchors.topMargin: 10
-                                        anchors.leftMargin: 6
-                                    }
-                                }
-
-                                RowLayout {
-                                    anchors.left: parent.left
-                                    anchors.right: parent.right
-
-                                    width: parent.width
-                                    Layout.fillWidth: true
-                                    ColumnLayout {
-
-                                        width: parent.width
-                                        Layout.fillWidth: true
-                                        Button {
-                                            Material.background: "#c8d3f5"
-                                            icon.color: "#333333"
-                                            icon.source: "qrc:images/edit.png"
-                                            width: parent.width
-                                            Layout.fillWidth: true
-                                        }
-                                    }
-                                    ColumnLayout {
-
-                                        width: parent.width
-                                        Layout.fillWidth: true
-                                        Button {
-                                            Material.background: "#ff757f"
-                                            icon.color: "#333333"
-                                            icon.source: "qrc:images/delete.png"
-                                            width: parent.width
-                                            Layout.fillWidth: true
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
                     }
                 }
             }
 
 
-            Button {
+            BlueButton {
                 anchors.top: parent.top
                 Layout.fillWidth: true
-                Material.background: "#70b0ff"
-                Material.foreground: "#333333"
-                width: parent.width
                 text: "Add"
+
             }
 
-            Button {
-                Layout.fillWidth: true
-                Material.background: "#ff757f"
-                Material.foreground: "#F8F8F8"
-                width: parent.width
-                text: "Disconnect"
-                enabled: false
+            DisconnectButton {
                 anchors.bottom: parent.bottom
+                Layout.fillWidth: true
+
             }
         }
     }

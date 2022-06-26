@@ -1,2 +1,6 @@
 module Style
-VPNButton 2.15 VPNButton.qml
+VPNButton 2.15 custom/VPNButton.qml
+EditRow 2.15 custom/EditRow.qml
+VPNRow 2.15 custom/VPNRow.qml
+BlueButton 2.15 custom/BlueButton.qml
+DisconnectButton 2.15 custom/DisconnectButton.qml
