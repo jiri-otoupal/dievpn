@@ -1,6 +1,6 @@
 # DieVPN
 
-### Tool that allows to switch between VPNs in ease and speed
+### Tool that allows to switch between VPNs with ease and speed
 
 [![image](https://img.shields.io/pypi/v/dvpn.svg)](https://pypi.org/project/dvpn/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dvpn)](https://pypi.org/project/dvpn/)
