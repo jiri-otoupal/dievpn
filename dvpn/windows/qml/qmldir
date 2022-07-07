@@ -4,3 +4,7 @@ EditRow 2.15 custom/EditRow.qml
 VPNRow 2.15 custom/VPNRow.qml
 BlueButton 2.15 custom/BlueButton.qml
 DisconnectButton 2.15 custom/DisconnectButton.qml
+FieldsRow 2.15 custom/FieldsRow.qml
+TextFieldRegular 2.15 custom/TextFieldRegular.qml
+ModalBase 2.15 modals/ModalBase.qml
+PageBase 2.15 modals/PageBase.qml
