@@ -47,7 +47,7 @@ PageBase {
     }
 
     Component.onCompleted: {
-        this.contentItem.parent = contentItemParent;
+
         this.anchors.fill = this.parentContent.contentItem;
     }
 

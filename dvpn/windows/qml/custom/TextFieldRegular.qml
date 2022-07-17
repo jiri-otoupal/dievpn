@@ -6,11 +6,12 @@ TextField {
 
     font.family: "Roboto"
     font.pixelSize: 12
-    implicitHeight: 30
+    leftPadding: 8
 
     background: Rectangle {
-        color: control.enabled ? Style.colors.white : Style.colors.grey
-        border.color: control.activeFocus ? Style.colors.turquoise : Style.colors.greyDarker
+        height: 30
+        color: control.enabled ? "white" : "#333333"
+        border.color: control.activeFocus ? "purple" : "#333333"
         radius: 4
     }
 

@@ -74,6 +74,46 @@ ApplicationWindow {
     ModalBase{
         visible: true
 
+        ColumnLayout{
+            anchors.topMargin : 45
+            anchors.fill: parent
+
+        FileField {
+
+        }
+
+        ScrollView {
+                anchors.topMargin : 60
+                anchors.fill: parent
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+
+                ListView {
+                model: ListModel{
+                    ListElement{
+                        name: "VPN Name"; placeholderText: "My Zoo VPN"
+                    }
+                    ListElement{
+                        name: "Host"; placeholderText: "favorite-zoo.com"
+                    }
+                    ListElement{
+                        name: "Username"; placeholderText: "giraffe"
+                    }
+                    ListElement{
+                        name: "Password"; placeholderText: "******"; password: true
+                    }
+
+                }
+                    spacing: 6
+                delegate:
+                    FieldRow {
+                        fieldName: model.name
+                        placeholderText: model.placeholderText
+                        echoMode: model.password ? TextInput.Password  : null
+                    }
+            }
+        }
+
+        }
 
     }
 
