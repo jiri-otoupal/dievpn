@@ -10,7 +10,7 @@ from dvpn.windows.logger import qt_message_handler
 
 
 class Bridge(QObject):
-    @Slot(str, result=None)
+    @Slot("QVariantMap", result=None)
     def add_vpn(self, obj):
         pass
 

@@ -72,7 +72,7 @@ ApplicationWindow {
         }
     }
 
-    ModalBase{
+    ModalBase {
         id: addModal
         visible: this.opacity > 0
         opacity: 0
@@ -84,7 +84,7 @@ ApplicationWindow {
             }
         }
 
-        ComboBox{
+        ComboBox {
             id: selectVpn
             height: 36
             anchors.top: parent.top
@@ -99,74 +99,88 @@ ApplicationWindow {
             model: ["AnyConnect","OpenVPN","TunnelBlick"]
         }
 
-        ColumnLayout{
+        ColumnLayout {
             anchors.topMargin : 45
             anchors.fill: parent
 
-        FileField {
-            id: "cliPath"
+            FileField {
+                id: cliPath
 
-            placeholderText: "Cli Executable Path"
-            anchors.rightMargin: 15
-            anchors.leftMargin: 15
-            anchors.topMargin : 20
-            anchors.left: parent.left
-            anchors.right: parent.right
-        }
+                placeholderText: "Cli Executable Path"
+                anchors.rightMargin: 15
+                anchors.leftMargin: 15
+                anchors.topMargin : 20
+                anchors.left: parent.left
+                anchors.right: parent.right
+            }
 
 
-        ScrollView {
+            ScrollView {
                 anchors.topMargin : 60
                 anchors.fill: parent
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                 ListView {
 
-                    model: ListModel{
+                    model: ListModel {
                         id: vpnAddDetails
-                        ListElement{
-                        textValue: "aa"
+                        ListElement {
                             name: "VPN Name"; placeholderText: "My Zoo VPN"
                         }
-                        ListElement{
+                        ListElement {
                             name: "Host"; placeholderText: "favourite-zoo.com"
                         }
-                        ListElement{
+                        ListElement {
                             name: "Username"; placeholderText: "giraffe"
                         }
-                        ListElement{
+                        ListElement {
                             name: "Password"; placeholderText: "******"; password: true
                         }
 
-                }
+                    }
                     spacing: 6
-                delegate:
+                    delegate:
                     FieldRow {
+                        index: model.index
                         textValue: model.text
                         fieldName: model.name
                         placeholderText: model.placeholderText
                         echoMode: model.password ? TextInput.Password  : null
                     }
+                }
             }
-        }
 
-        BlueButton {
-            anchors.bottomMargin: 16
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
+            BlueButton {
+                id: "submitAdd"
+                text: "Add"
 
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
+                anchors.bottomMargin: 16
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
 
-            id: "submitAdd"
-
-            text: "Add"
-
-            onClicked: con.add_vpn(vpnAddDetails.get(0).textValue)
+                anchors.leftMargin: 16
+                anchors.rightMargin: 16
 
 
-        }
+
+                onClicked: {
+                    const obj = {};
+
+                    obj.selectedVpn = selectVpn.currentText;
+                    obj.cliPath = cliPath.value;
+
+                    for (var i=0; i < vpnAddDetails.count; i++) {
+                        const row = vpnAddDetails.get(i);
+                        obj[row.name] = row.textValue;
+                    }
+
+                    con.add_vpn(obj);
+                }
+
+
+
+            }
 
         }
 

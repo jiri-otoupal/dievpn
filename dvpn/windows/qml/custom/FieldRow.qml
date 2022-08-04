@@ -11,16 +11,20 @@ RowLayout {
     width: parent.width
 
     property var echoMode
+    property int index
     property string fieldName: ""
     property string placeholderText: ""
     property string textValue: ""
 
-    TextRegular{
+    TextRegular {
         id: textLabel
         text: parent.fieldName
     }
 
     TextFieldRegular {
+        onTextChanged: vpnAddDetails.set(parent.index, {
+            "textValue":this.text
+        })
         text: parent.textValue
         echoMode: parent.echoMode
         placeholderText: parent.placeholderText
