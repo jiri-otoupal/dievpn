@@ -1,14 +1,51 @@
 import QtQuick 2.15
+import Qt.labs.platform
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.1
+
+
+RowLayout{
+    anchors.left: parent.left
+    anchors.right: parent.right
+
+    property string placeholderText
+
+    TextRegular {
+        id: placeLabel
+        text: "Cli Path"
+    }
 
 TextFieldRegular {
     id: control
 
+    placeholderText: parent.placeholderText
+    anchors.left: placeLabel.right
+    anchors.right: parent.right
+    anchors.leftMargin: 2
+
     rightPadding: 36
 
-    readOnly: true
+    readOnly: false
 
-    function onBrowseClicked() {}
+    function onBrowseClicked() {
+        cliFileDialog.visible=true;
+    }
+    FileDialog {
+        id: cliFileDialog
+        title: "Please choose a CLI executable"
+        visible: false
+        options: FileDialog.ReadOnly
+
+        onAccepted: {
+            control.text= cliFileDialog.file.toString()
+        }
+        onRejected: {
+
+        }
+
+    }
+
+
 
     Image {
         id: browseIcon
@@ -34,4 +71,5 @@ TextFieldRegular {
             onClicked: control.onBrowseClicked();
         }
     }
+}
 }

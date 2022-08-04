@@ -43,7 +43,7 @@ PageBase {
     }
 
     function close() {
-        control.hide();
+        control.opacity=0;
     }
 
     Component.onCompleted: {
@@ -56,7 +56,7 @@ PageBase {
 
         interval: autohideMs
 
-        onTriggered: control.hide();
+        onTriggered:         control.opacity=0;
     }
 
     Rectangle {
@@ -68,7 +68,7 @@ PageBase {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
 
-            onClicked: control.hide()
+            onClicked:         control.opacity=0;
         }
 
         Rectangle {
@@ -105,7 +105,7 @@ PageBase {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
 
-                    onClicked: control.hide();
+                    onClicked:        control.opacity=0;
                 }
             }
 

@@ -1,6 +1,6 @@
 import sys
 
-from PySide6.QtCore import QObject, QCoreApplication, QUrl, qInstallMessageHandler
+from PySide6.QtCore import QObject, QCoreApplication, QUrl, qInstallMessageHandler, Slot
 from PySide6.QtGui import Qt, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtWidgets import QApplication
@@ -10,7 +10,9 @@ from dvpn.windows.logger import qt_message_handler
 
 
 class Bridge(QObject):
-    pass
+    @Slot(str, result=None)
+    def add_vpn(self, obj):
+        pass
 
 
 if __name__ == "__main__":

@@ -61,6 +61,7 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 text: "Add"
 
+                onClicked: addModal.opacity=1
             }
 
             DisconnectButton {
@@ -72,15 +73,47 @@ ApplicationWindow {
     }
 
     ModalBase{
-        visible: true
+        id: addModal
+        visible: this.opacity > 0
+        opacity: 0
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 100
+                easing.type: Easing.Out
+            }
+        }
+
+        ComboBox{
+            id: selectVpn
+            height: 36
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 48
+            anchors.rightMargin: 48
+            anchors.topMargin: 12
+            font.family: "Roboto"
+            font.pixelSize: 12
+
+            model: ["AnyConnect","OpenVPN","TunnelBlick"]
+        }
 
         ColumnLayout{
             anchors.topMargin : 45
             anchors.fill: parent
 
         FileField {
+            id: "cliPath"
 
+            placeholderText: "Cli Executable Path"
+            anchors.rightMargin: 15
+            anchors.leftMargin: 15
+            anchors.topMargin : 20
+            anchors.left: parent.left
+            anchors.right: parent.right
         }
+
 
         ScrollView {
                 anchors.topMargin : 60
@@ -88,29 +121,51 @@ ApplicationWindow {
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                 ListView {
-                model: ListModel{
-                    ListElement{
-                        name: "VPN Name"; placeholderText: "My Zoo VPN"
-                    }
-                    ListElement{
-                        name: "Host"; placeholderText: "favorite-zoo.com"
-                    }
-                    ListElement{
-                        name: "Username"; placeholderText: "giraffe"
-                    }
-                    ListElement{
-                        name: "Password"; placeholderText: "******"; password: true
-                    }
+
+                    model: ListModel{
+                        id: vpnAddDetails
+                        ListElement{
+                        textValue: "aa"
+                            name: "VPN Name"; placeholderText: "My Zoo VPN"
+                        }
+                        ListElement{
+                            name: "Host"; placeholderText: "favourite-zoo.com"
+                        }
+                        ListElement{
+                            name: "Username"; placeholderText: "giraffe"
+                        }
+                        ListElement{
+                            name: "Password"; placeholderText: "******"; password: true
+                        }
 
                 }
                     spacing: 6
                 delegate:
                     FieldRow {
+                        textValue: model.text
                         fieldName: model.name
                         placeholderText: model.placeholderText
                         echoMode: model.password ? TextInput.Password  : null
                     }
             }
+        }
+
+        BlueButton {
+            anchors.bottomMargin: 16
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            anchors.leftMargin: 16
+            anchors.rightMargin: 16
+
+            id: "submitAdd"
+
+            text: "Add"
+
+            onClicked: con.add_vpn(vpnAddDetails.get(0).textValue)
+
+
         }
 
         }

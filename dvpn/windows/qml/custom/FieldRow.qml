@@ -13,6 +13,7 @@ RowLayout {
     property var echoMode
     property string fieldName: ""
     property string placeholderText: ""
+    property string textValue: ""
 
     TextRegular{
         id: textLabel
@@ -20,6 +21,7 @@ RowLayout {
     }
 
     TextFieldRegular {
+        text: parent.textValue
         echoMode: parent.echoMode
         placeholderText: parent.placeholderText
         anchors.leftMargin: 2
