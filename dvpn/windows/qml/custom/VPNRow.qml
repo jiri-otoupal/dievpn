@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.1
 
 RowLayout {
     width: parent.width
+    property string vpn_name
 
 
     Rectangle {
@@ -22,11 +23,14 @@ RowLayout {
 
 
             VPNButton {
+                id: conn_button
                 Layout.fillWidth: true
-                text: "VPN " + (index + 1)
+                text: parent.parent.parent.vpn_name
+                onClicked: con.connect(this.text)
             }
 
             EditRow {
+                vpn_name: parent.parent.parent.vpn_name
                 Layout.fillWidth: true
 
             }

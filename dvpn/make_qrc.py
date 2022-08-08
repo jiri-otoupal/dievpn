@@ -1,6 +1,6 @@
 from pathlib import Path
 
-RESOURCE_DIRS = [Path(d) for d in ["icons", "qml", "qml/custom", "images", "qml/modals"]]
+RESOURCE_DIRS = [Path(d) for d in ["icons", "qml", "qml/custom", "images", "qml/modals", "js"]]
 
 with open("main.qrc", "w", encoding="utf-8") as f:
     def fprint(string=""):

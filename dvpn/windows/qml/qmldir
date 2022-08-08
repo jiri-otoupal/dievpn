@@ -11,3 +11,5 @@ TextFieldRegular 2.15 custom/TextFieldRegular.qml
 ModalBase 2.15 modals/ModalBase.qml
 PageBase 2.15 modals/PageBase.qml
 ClickMouseArea 2.15 custom/ClickMouseArea.qml
+ModalAdd 2.15 modals/ModalAdd.qml
+ModalEdit 2.15 modals/ModalEdit.qml

@@ -1,6 +1,7 @@
 from tkinter import Tk
 
 from dvpn.config.constants import PublicVars
+from dvpn.vpns.base import VpnCli
 
 buttons = []
 
@@ -25,7 +26,7 @@ def reopen(last_window: Tk):
     open_gui()
 
 
-def connect(cli, host) -> (bool, dict):
+def connect(cli: VpnCli, host: str) -> (bool, dict):
     creds = PublicVars().credentials[host]
     vpncli = cli(str(creds["cli_path"]))
     try:
