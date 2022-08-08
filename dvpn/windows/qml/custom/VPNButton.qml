@@ -7,12 +7,13 @@ Button {
     id: control
     Material.background: "#717CB4"
     Material.foreground: "#F8F8F8"
+    property bool connected: false
 
 
     Image {
         id: conn_status
         antialiasing: true
-        source: "qrc:/images/disconnected.png"
+        source: parent.connected ? "qrc:/images/connected.png": "qrc:/images/disconnected.png"
         transform: [Scale {
             yScale: 0.6
             xScale: 0.6

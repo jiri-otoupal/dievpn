@@ -6,7 +6,8 @@ import QtQuick.Layouts 1.1
 RowLayout {
     width: parent.width
     property string vpn_name
-
+    property bool running: false
+    property bool connected: false
 
     Rectangle {
         radius:6
@@ -17,16 +18,29 @@ RowLayout {
 
         ColumnLayout {
             spacing: 0
-            width: parent.width -12
+            width: parent.width - 12
             anchors.centerIn: parent
             Layout.fillWidth: true
 
 
             VPNButton {
                 id: conn_button
+                connected: parent.parent.parent.connected
                 Layout.fillWidth: true
                 text: parent.parent.parent.vpn_name
-                onClicked: con.connect(this.text)
+                onClicked: {
+                    conn_status.running = true
+                    con.connect(this.text);
+                }
+
+                BusyIndicator {
+                    id: conn_status
+                    visible: running
+                    anchors.topMargin: 6
+                    anchors.bottomMargin: 6
+                    running: parent.parent.parent.parent.running
+                    anchors.fill: parent
+                }
             }
 
             EditRow {

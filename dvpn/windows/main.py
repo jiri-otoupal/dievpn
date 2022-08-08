@@ -1,4 +1,5 @@
 import sys
+from threading import Thread
 
 from PySide6.QtCore import QObject, QCoreApplication, QUrl, qInstallMessageHandler, Slot
 from PySide6.QtGui import Qt, QIcon
@@ -14,7 +15,6 @@ from dvpn.windows.logger import qt_message_handler
 class Bridge(QObject):
     @Slot(result="QVariantMap")
     def list_vpn(self) -> dict:
-        print("queried")
         return PublicVars().credentials
 
     @Slot("QVariantMap", result=None)
@@ -22,25 +22,33 @@ class Bridge(QObject):
         PublicVars()[obj["VPN Name"]] = obj
 
     @Slot(str)
-    def connect(self, vpn_name):
+    def connect(self, vpn_name: str):
         print(f"connecting {vpn_name}")
         vpn_conf = PublicVars()[vpn_name]
-        cli = CLI_RESOLVE[vpn_conf["selectedVpn"]]()
-        connect(cli, vpn_conf["Host"])
+        cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
+        t = Thread(target=lambda: connect(cli, vpn_conf["VPN Name"]),
+                   name=f"Connecting {vpn_conf['VPN Name']}", daemon=True)
+        t.start()
 
     @Slot(str)
-    def edit(self, vpn_name):
+    def edit(self, vpn_name: str):
         print(f"edit {vpn_name}")
         pass
 
     @Slot(str)
-    def delete(self, vpn_name):
-        print(f"delete {vpn_name}")
-        pass
+    def delete(self, vpn_name: str):
+        tmp = PublicVars().credentials
+        tmp.pop(vpn_name, None)
+        PublicVars().credentials = tmp
+
+    @Slot(str)
+    def disconnect(self, vpn_name: str):
+        vpn_conf = PublicVars()[vpn_name]
+        cli = CLI_RESOLVE[vpn_conf["selectedVpn"]]()
+        cli.reset()
 
 
 if __name__ == "__main__":
-
     qInstallMessageHandler(qt_message_handler)
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)

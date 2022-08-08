@@ -28,7 +28,7 @@ def reopen(last_window: Tk):
 
 def connect(cli: VpnCli, host: str) -> (bool, dict):
     creds = PublicVars().credentials[host]
-    vpncli = cli(str(creds["cli_path"]))
+    vpncli = type(cli)(str(creds["cliPath"]))
     try:
         return vpncli.connect(creds)
     except Exception as ex:

@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Material 2.2
 import QtQuick.Controls 2.2
-
+import ":/../../../js/Basic.js" as Basic
 
 
 ModalBase {
@@ -115,6 +115,7 @@ ModalBase {
 
 
             onClicked: {
+                //TODO: check
                 const obj = {};
 
                 obj.banner = bannerCheckBox.checked;
@@ -127,6 +128,7 @@ ModalBase {
                 }
 
                 con.add_vpn(obj);
+                Basic.addVpn(obj["VPN Name"]);
             }
 
 

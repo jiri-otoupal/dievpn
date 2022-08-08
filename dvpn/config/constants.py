@@ -1,5 +1,6 @@
 import json
 from builtins import dict
+from typing import Optional
 
 from dvpn.config.paths import secret_path
 from dvpn.vpns.anyconnect import AnyConnectCLI
@@ -12,13 +13,15 @@ CLI_RESOLVE = {
     "AnyConnect": AnyConnectCLI
 }
 
+
 class PublicVars:
     _credentials = {}
     instance = None
 
     def __init__(self):
         self._credentials = {}
-        self.load_vars()
+        if secret_path.exists():
+            self.load_vars()
 
     def __new__(cls, *args, **kwargs):
         if cls.instance is None:
@@ -35,9 +38,14 @@ class PublicVars:
             self.load_vars()
         return self._credentials
 
-    def save_vars(self, vars: dict):
+    def save_vars(self, variables: Optional[dict] = None):
+        if variables is None:
+            vars_save = PublicVars().credentials
+        else:
+            vars_save = variables
+
         with open(str(secret_path), "w") as fp:
-            json.dump(vars, fp, indent=4)
+            json.dump(vars_save, fp, indent=4)
 
     def load_vars(self):
         with open(str(secret_path), "r") as fp:

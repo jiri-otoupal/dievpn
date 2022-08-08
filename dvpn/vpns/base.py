@@ -10,6 +10,7 @@ class VpnCli(metaclass=SingletonMeta):
         print(
             "Make sure to kill all VPN clients before usage, as cli would collide with it"
         )
+        print("If this is stuck, make sure you are not running this from PyCharm or other IDE")
         self.excluded_fields = []
         self.process_pipe = None
         self.cli_path = cli_path

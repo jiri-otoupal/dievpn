@@ -29,6 +29,24 @@ ApplicationWindow {
         Layout.fillWidth: true
         anchors.fill: parent
 
+        Rectangle {
+            visible: vpn_model.count == 0
+            opacity: 0.5
+            anchors.bottomMargin: 60
+            anchors.topMargin: 60
+            color: "#f8f8f8"
+            radius: 6
+
+            anchors.fill: parent
+            Text{
+                anchors.centerIn: parent
+                font.family: "Roboto"
+                font.pixelSize: 32
+
+                text: "No VPNs added."
+            }
+
+        }
 
         ColumnLayout {
             id: vpn_list
@@ -84,6 +102,7 @@ ApplicationWindow {
                 anchors.bottom: parent.bottom
                 Layout.fillWidth: true
 
+                onClicked: con.disconnect()
             }
         }
     }
