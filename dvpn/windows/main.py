@@ -1,7 +1,8 @@
+import logging
 import sys
 from threading import Thread
 
-from PySide6.QtCore import QObject, QCoreApplication, QUrl, qInstallMessageHandler, Slot
+from PySide6.QtCore import QObject, QCoreApplication, QUrl, qInstallMessageHandler, Slot, Signal
 from PySide6.QtGui import Qt, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtWidgets import QApplication
@@ -13,6 +14,15 @@ from dvpn.windows.logger import qt_message_handler
 
 
 class Bridge(QObject):
+    changingVPNs = []
+
+    connectStatusChange = Signal(str, bool, bool, name="connectStatusChange")
+    disconnectChange = Signal(str, bool, bool, name="disconnectChange")
+
+    @Slot(str)
+    def log(self, text):
+        print(text)
+
     @Slot(result="QVariantMap")
     def list_vpn(self) -> dict:
         return PublicVars().credentials
@@ -23,10 +33,12 @@ class Bridge(QObject):
 
     @Slot(str)
     def connect(self, vpn_name: str):
+        bridge.connectStatusChange.emit(vpn_name, False, True)
+        self.changingVPNs.append(vpn_name)
         print(f"connecting {vpn_name}")
         vpn_conf = PublicVars()[vpn_name]
         cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
-        t = Thread(target=lambda: connect(cli, vpn_conf["VPN Name"]),
+        t = Thread(target=lambda: connect(cli, vpn_conf["VPN Name"], self),
                    name=f"Connecting {vpn_conf['VPN Name']}", daemon=True)
         t.start()
 
@@ -43,9 +55,16 @@ class Bridge(QObject):
 
     @Slot(str)
     def disconnect(self, vpn_name: str):
+        self.disconnectChange.emit(vpn_name, True, True)
         vpn_conf = PublicVars()[vpn_name]
-        cli = CLI_RESOLVE[vpn_conf["selectedVpn"]]()
+        cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
+        t = Thread(target=lambda: self.disconnect_notify(vpn_name, cli),
+                   name=f"Disconnecting {vpn_name}", daemon=True)
+        t.start()
+
+    def disconnect_notify(self, vpn_name, cli):
         cli.reset()
+        self.disconnectChange.emit(vpn_name, False, False)
 
 
 if __name__ == "__main__":

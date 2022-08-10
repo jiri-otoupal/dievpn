@@ -70,7 +70,8 @@ class AnyConnectCLI(VpnCli):
         self.reset()
 
         try:
-            stat = self.__connect(**creds)
+            stat = self.__connect(host=creds["Host"], username=creds["Username"],
+                                  password=creds["Password"], **creds)
         except wexpect.TIMEOUT as ex:
             stat = {"reason": "invalid credentials"}
 

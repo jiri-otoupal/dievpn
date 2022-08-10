@@ -23,6 +23,36 @@ ApplicationWindow {
     maximumWidth: this.width
     minimumWidth: this.width
 
+    property string connectedVPN: null
+
+    signal connectStatusChange(string vpn_name,bool connected, bool running)
+    signal disconnectChange(string vpn_name,bool connected, bool running)
+
+    Component.onCompleted: {
+        con.connectStatusChange.connect(window.connectStatusChange);
+        con.disconnectChange.connect(window.disconnectChange);
+    }
+
+    onDisconnectChange: function(vpn_name,connected, running){
+        if(!connected)
+            disconnectBtn.enabled = connected;
+
+        if(connected)
+            window.connectedVPN = null;
+
+        Basic.changeVpn(vpn_name,connected,running);
+    }
+
+    onConnectStatusChange: function(vpn_name,connected, running){
+        if(connected)
+            disconnectBtn.enabled= connected;
+
+        if(connected)
+            window.connectedVPN=vpn_name;
+
+        Basic.changeVpn(vpn_name,connected,running);
+
+    }
 
     GroupBox {
         width: parent.width
@@ -80,6 +110,8 @@ ApplicationWindow {
                     }
                     spacing: 6
                     delegate: VPNRow {
+                        running: model.running
+                        connected: model.connected
                         vpn_name: model.vpn_name
                         Layout.fillWidth: true
 
@@ -99,10 +131,11 @@ ApplicationWindow {
             }
 
             DisconnectButton {
+                id: disconnectBtn
                 anchors.bottom: parent.bottom
                 Layout.fillWidth: true
 
-                onClicked: con.disconnect()
+                onClicked: con.disconnect(window.connectedVPN)
             }
         }
     }

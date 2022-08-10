@@ -4,6 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 
 RowLayout {
+    id: control
     width: parent.width
     property string vpn_name
     property bool running: false
@@ -25,20 +26,23 @@ RowLayout {
 
             VPNButton {
                 id: conn_button
-                connected: parent.parent.parent.connected
+                connected: control.connected
+                enabled: !control.running
+
                 Layout.fillWidth: true
                 text: parent.parent.parent.vpn_name
                 onClicked: {
-                    conn_status.running = true
-                    con.connect(this.text);
+                    if(control.connected)
+                        con.disconnect(this.text);
+                    else
+                        con.connect(this.text);
                 }
 
                 BusyIndicator {
-                    id: conn_status
-                    visible: running
+                    visible: control.running
                     anchors.topMargin: 6
                     anchors.bottomMargin: 6
-                    running: parent.parent.parent.parent.running
+                    running: visible
                     anchors.fill: parent
                 }
             }
