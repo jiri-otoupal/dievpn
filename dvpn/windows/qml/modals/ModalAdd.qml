@@ -54,21 +54,17 @@ ModalBase {
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
             ListView {
+                Component.onCompleted: {
+                    const fields = con.get_vpn_fields(selectVpn.currentText);
+                    for (var i = 0; i < fields.length; i++) {
+                        vpnAddDetails.append(fields[i]);
+                    }
 
+
+                }
                 model: ListModel {
                     id: vpnAddDetails
-                    ListElement {
-                        name: "VPN Name"; placeholderText: "My Zoo VPN"
-                    }
-                    ListElement {
-                        name: "Host"; placeholderText: "favourite-zoo.com"
-                    }
-                    ListElement {
-                        name: "Username"; placeholderText: "giraffe"
-                    }
-                    ListElement {
-                        name: "Password"; placeholderText: "******"; password: true
-                    }
+
 
                 }
                 spacing: 6
@@ -78,7 +74,7 @@ ModalBase {
                     textValue: model.text
                     fieldName: model.name
                     placeholderText: model.placeholderText
-                    echoMode: model.password ? TextInput.Password  : null
+                    echoMode: model.sensitive ? TextInput.Password : null
                 }
             }
         }
@@ -97,7 +93,7 @@ ModalBase {
             anchors.fill: parent
             text: "Has Banner"
 
-        }
+            }
         }
 
         BlueButton {

@@ -3,8 +3,8 @@ import os
 import re
 import subprocess
 import sys
+from pathlib import Path
 
-from dvpn.config.paths import vpn_cli_file_path_win, vpn_cli_file_path_osx
 from dvpn.vpns.base import VpnCli
 
 if sys.platform == "win32":
@@ -14,6 +14,16 @@ else:
 
 
 class AnyConnectCLI(VpnCli):
+    fields = [{"name": "VPN Name", "placeholderText": "My Zoo VPN"},
+              {"name": "Host", "placeholderText": "favourite-zoo.com"},
+              {"name": "Username", "placeholderText": "giraffe"},
+              {"name": "Password", "placeholderText": "******", "sensitive": True}
+              ]
+    cli_path_win = Path("C:\\") / \
+                   "Program Files (x86)\\" / "Cisco\\" / \
+                   "Cisco AnyConnect Secure Mobility Client\\vpncli.exe"
+
+    cli_path_osx = Path("/opt/cisco/anyconnect/bin/vpn")
 
     def get_connected_vpn(self):
         stdout = subprocess.check_output([self.cli_path, "stats"]).decode()
@@ -27,9 +37,7 @@ class AnyConnectCLI(VpnCli):
         print("...Disconnecting")
         # TODO: fix this for more types of vpn supported
         pipe = wexpect.spawn(
-            command=str(vpn_cli_file_path_win)
-            if os.name == "nt"
-            else str(vpn_cli_file_path_osx),
+            command=cli_path if cli_path else cls.get_default_cli_path(),
             args=["disconnect"],
             encoding="utf-8"
         )

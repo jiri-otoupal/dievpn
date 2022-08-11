@@ -45,7 +45,7 @@ ApplicationWindow {
 
     onConnectStatusChange: function(vpn_name,connected, running){
         if(connected)
-            disconnectBtn.enabled= connected;
+            disconnectBtn.enabled = connected;
 
         if(connected)
             window.connectedVPN=vpn_name;

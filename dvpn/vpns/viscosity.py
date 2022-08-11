@@ -4,7 +4,6 @@ import re
 import subprocess
 import sys
 
-from dvpn.config.paths import vpn_cli_file_path_win, vpn_cli_file_path_osx
 from dvpn.vpns.base import VpnCli
 
 if sys.platform == "win32":
@@ -31,9 +30,7 @@ class ViscosityCLI(VpnCli):
         print("...Disconnecting")
         # TODO: fix this for more types of vpn supported
         pipe = wexpect.spawn(
-            command=str(vpn_cli_file_path_win)
-            if os.name == "nt"
-            else str(vpn_cli_file_path_osx),
+            command=cli_path if cli_path else cls.get_default_cli_path(),
             args=["disconnect"],
             encoding="utf-8"
         )

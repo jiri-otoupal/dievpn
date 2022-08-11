@@ -1,4 +1,5 @@
 import abc
+import os
 
 from dvpn.modules.vpn_cli_singleton import SingletonMeta
 
@@ -14,6 +15,23 @@ class VpnCli(metaclass=SingletonMeta):
         self.excluded_fields = []
         self.process_pipe = None
         self.cli_path = cli_path
+
+
+    @property
+    @abc.abstractmethod
+    def cli_path_win(self):
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def cli_path_osx(self):
+        raise NotImplementedError
+
+    @classmethod
+    def get_default_cli_path(cls):
+        if os.name == "nt":
+            return str(cls.cli_path_win)
+        return str(cls.cli_path_osx)
 
     @abc.abstractmethod
     def get_connected_vpn(self):
@@ -31,3 +49,4 @@ class VpnCli(metaclass=SingletonMeta):
     @abc.abstractmethod
     def connect(self, creds: dict) -> (bool, dict):
         pass
+

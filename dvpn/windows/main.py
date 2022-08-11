@@ -27,9 +27,19 @@ class Bridge(QObject):
     def list_vpn(self) -> dict:
         return PublicVars().credentials
 
-    @Slot("QVariantMap", result=None)
-    def add_vpn(self, obj: dict):
-        PublicVars()[obj["VPN Name"]] = obj
+    @Slot("QVariantMap", result=bool)
+    def add_vpn(self, obj: dict) -> bool:
+        vpn_name = obj["VPN Name"]
+        if vpn_name not in PublicVars().credentials.keys():
+            PublicVars()[vpn_name] = obj
+            return True
+        return False
+
+    @Slot(str, result=list)
+    def get_vpn_fields(self, vpn_name):
+        cli = CLI_RESOLVE[vpn_name]
+        return cli.fields
+
 
     @Slot(str)
     def connect(self, vpn_name: str):
