@@ -30,6 +30,12 @@ ModalBase {
         font.pixelSize: 12
 
         model: ["AnyConnect","OpenVPN","TunnelBlick"]
+
+        onCurrentTextChanged: {
+            vpnAddDetails.clear();
+            Basic.updateFieldsModalAdd();
+
+        }
     }
 
     ColumnLayout {
@@ -55,10 +61,8 @@ ModalBase {
 
             ListView {
                 Component.onCompleted: {
-                    const fields = con.get_vpn_fields(selectVpn.currentText);
-                    for (var i = 0; i < fields.length; i++) {
-                        vpnAddDetails.append(fields[i]);
-                    }
+                    vpnAddDetails.clear();
+                    Basic.updateFieldsModalAdd();
 
 
                 }
