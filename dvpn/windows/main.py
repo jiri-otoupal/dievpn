@@ -1,4 +1,3 @@
-import logging
 import sys
 from threading import Thread
 
@@ -14,7 +13,8 @@ from dvpn.windows.logger import qt_message_handler
 
 
 class Bridge(QObject):
-    changingVPNs = []
+    connectedVPNs = set()
+    changingVPNs = set()
 
     connectStatusChange = Signal(str, bool, bool, name="connectStatusChange")
     disconnectChange = Signal(str, bool, bool, name="disconnectChange")
@@ -40,12 +40,12 @@ class Bridge(QObject):
         cli = CLI_RESOLVE[vpn_name]
         return cli.fields
 
-
     @Slot(str)
     def connect(self, vpn_name: str):
+        # noinspection PyUnresolvedReferences
         bridge.connectStatusChange.emit(vpn_name, False, True)
-        self.changingVPNs.append(vpn_name)
-        print(f"connecting {vpn_name}")
+        self.changingVPNs.add(vpn_name)
+
         vpn_conf = PublicVars()[vpn_name]
         cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
         t = Thread(target=lambda: connect(cli, vpn_conf["VPN Name"], self),
@@ -64,7 +64,12 @@ class Bridge(QObject):
         PublicVars().credentials = tmp
 
     @Slot(str)
+    def connected_notify(self, vpn_name: str):
+        self.connectedVPNs.add(vpn_name)
+
+    @Slot(str)
     def disconnect(self, vpn_name: str):
+        # noinspection PyUnresolvedReferences
         self.disconnectChange.emit(vpn_name, True, True)
         vpn_conf = PublicVars()[vpn_name]
         cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
@@ -72,9 +77,22 @@ class Bridge(QObject):
                    name=f"Disconnecting {vpn_name}", daemon=True)
         t.start()
 
+    @Slot()
+    def reset(self):
+        for host in set(self.connectedVPNs):
+            creds = PublicVars().credentials[host]
+            cli_type = CLI_RESOLVE[creds["selectedVpn"]]
+            cli = cli_type(str(creds["cliPath"]))
+            t = Thread(target=lambda: self.disconnect_notify(host, cli),
+                       name=f"Disconnecting {host}", daemon=True)
+            t.start()
+
     def disconnect_notify(self, vpn_name, cli):
-        cli.reset()
+        self.disconnectChange.emit(vpn_name, False, True)
+        cli.reset(host=vpn_name)
+        # noinspection PyUnresolvedReferences
         self.disconnectChange.emit(vpn_name, False, False)
+        self.connectedVPNs.remove(vpn_name)
 
 
 if __name__ == "__main__":

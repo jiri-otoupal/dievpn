@@ -32,10 +32,12 @@ RowLayout {
                 Layout.fillWidth: true
                 text: parent.parent.parent.vpn_name
                 onClicked: {
-                    if(control.connected)
+                    if(control.connected){
                         con.disconnect(this.text);
-                    else
+                    }else{
+                        con.reset();
                         con.connect(this.text);
+                    }
                 }
 
                 BusyIndicator {

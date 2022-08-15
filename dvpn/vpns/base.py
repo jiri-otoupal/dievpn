@@ -16,7 +16,6 @@ class VpnCli(metaclass=SingletonMeta):
         self.process_pipe = None
         self.cli_path = cli_path
 
-
     @property
     @abc.abstractmethod
     def cli_path_win(self):
@@ -39,14 +38,13 @@ class VpnCli(metaclass=SingletonMeta):
 
     @classmethod
     @abc.abstractmethod
-    def reset(cls, cli_path=None):
+    def reset(cls, cli_path=None, host: str = None):
         pass
 
     @abc.abstractmethod
-    def __connect(self, host, username, password, **kwargs) -> dict:
+    def __connect(self, **kwargs) -> dict:
         pass
 
     @abc.abstractmethod
     def connect(self, creds: dict) -> (bool, dict):
         pass
-

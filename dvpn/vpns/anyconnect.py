@@ -32,13 +32,16 @@ class AnyConnectCLI(VpnCli):
 
         return vpn_name_index.split(" ")[1]
 
-    @classmethod
-    def reset(cls, cli_path=None):
+    def reset(self, cli_path=None, host: str = None):
         print("...Disconnecting")
-        # TODO: fix this for more types of vpn supported
+        arguments = ["disconnect"]
+
+        if host:
+            arguments.append(host)
+
         pipe = wexpect.spawn(
-            command=cli_path if cli_path else cls.get_default_cli_path(),
-            args=["disconnect"],
+            command=cli_path if cli_path else self.get_default_cli_path(),
+            args=arguments,
             encoding="utf-8"
         )
         output = pipe.readlines()

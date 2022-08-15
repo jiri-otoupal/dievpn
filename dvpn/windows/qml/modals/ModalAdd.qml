@@ -29,7 +29,7 @@ ModalBase {
         font.family: "Roboto"
         font.pixelSize: 12
 
-        model: ["AnyConnect","OpenVPN","TunnelBlick"]
+        model: ["AnyConnect","Viscosity"]
 
         onCurrentTextChanged: {
             vpnAddDetails.clear();

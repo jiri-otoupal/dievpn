@@ -21,7 +21,7 @@ function changeVpn(vpn_name, connected, running) {
         if (name === vpn_name) {
             vpn_model.setProperty(i, "connected", connected);
             vpn_model.setProperty(i, "running", running);
-            break;
+            return;
         }
 
     }
