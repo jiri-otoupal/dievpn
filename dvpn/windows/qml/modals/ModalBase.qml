@@ -4,9 +4,9 @@ import QtQuick.Window 2.15
 
 PageBase {
     id: control
-
     property var parentContent: Window.window
-
+    visible: opacity > 0
+    opacity: 0
     anchors.centerIn: parent
     property int modalWidth: parent.width - 12
     property int modalMinimumHeight: parent.height - 32
@@ -22,6 +22,13 @@ PageBase {
 
     property Item contentItem: contentItem
 
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: 100
+        }
+    }
+
     function showMessage(message, title) {
         titleLabel.text = title ?? this.defaultTitle;
         if (this.contentTextTarget) {
@@ -35,7 +42,7 @@ PageBase {
 
     // Wrapper functions for compatibility
     function _open() {
-        control.showMessage();
+        control.opacity=1;
     }
 
     function open() {

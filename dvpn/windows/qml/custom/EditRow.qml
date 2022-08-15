@@ -24,7 +24,11 @@ RowLayout {
             width: parent.width
             Layout.fillWidth: true
 
-            onClicked: con.edit(parent.parent.vpn_name);
+            onClicked: {
+                editModal.load(control.vpn_name);
+                editModal.vpn_name=control.vpn_name;
+                editModal.open();
+            }
         }
     }
     ColumnLayout {

@@ -22,7 +22,7 @@ RowLayout {
     }
 
     TextFieldRegular {
-        onTextChanged: vpnAddDetails.set(parent.index, {
+        onTextChanged: vpnDetails.set(parent.index, {
             "textValue":this.text
         })
         text: parent.textValue

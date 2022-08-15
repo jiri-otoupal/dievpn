@@ -27,6 +27,10 @@ class Bridge(QObject):
     def list_vpn(self) -> dict:
         return PublicVars().credentials
 
+    @Slot(str, result="QVariantMap")
+    def get_vpn_details(self, vpn_name: str) -> dict:
+        return PublicVars().credentials[vpn_name]
+
     @Slot("QVariantMap", result=bool)
     def add_vpn(self, obj: dict) -> bool:
         vpn_name = obj["VPN Name"]
@@ -52,10 +56,11 @@ class Bridge(QObject):
                    name=f"Connecting {vpn_conf['VPN Name']}", daemon=True)
         t.start()
 
-    @Slot(str)
-    def edit(self, vpn_name: str):
-        print(f"edit {vpn_name}")
-        pass
+    @Slot(str, "QVariantMap")
+    def edit(self, vpn_name: str, contents: dict):
+        tmp = PublicVars().credentials
+        tmp[vpn_name] = contents
+        PublicVars().credentials = tmp
 
     @Slot(str)
     def delete(self, vpn_name: str):

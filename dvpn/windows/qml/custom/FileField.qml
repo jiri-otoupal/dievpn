@@ -5,9 +5,6 @@ import QtQuick.Layouts 1.1
 
 
 RowLayout {
-    anchors.left: parent.left
-    anchors.right: parent.right
-
     property string value: control.text
     property string placeholderText
 

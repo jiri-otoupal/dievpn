@@ -78,7 +78,7 @@ ApplicationWindow {
 
         }
 
-        ColumnLayout {
+        Item {
             id: vpn_list
             width: parent.width
             anchors.bottom: parent.bottom
@@ -127,7 +127,7 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 text: "Add"
 
-                onClicked: addModal.opacity=1
+                onClicked: addModal.open()
             }
 
             DisconnectButton {
