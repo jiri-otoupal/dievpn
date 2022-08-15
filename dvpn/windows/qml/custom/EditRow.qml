@@ -51,8 +51,9 @@ RowLayout {
         buttons: MessageDialog.Yes | MessageDialog.No
 
         onAccepted: {
+            con.delete(control.vpn_name);
             Basic.removeVpn(control.vpn_name);
-             con.delete(control.vpn_name);
+
         }
 
     }

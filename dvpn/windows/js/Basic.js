@@ -3,7 +3,14 @@ function addVpn(vpn_name) {
 }
 
 function removeVpn(vpn_name) {
-    vpn_model.remove(vpn_name)
+    for (let i = 0; vpn_model.count > i; i++) {
+        const item = vpn_model.get(i);
+        const name = item.vpn_name;
+
+        if (name === vpn_name)
+            vpn_model.remove(i)
+
+    }
 }
 
 function updateFieldsModalAdd() {

@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.1
 import QtQuick.Controls.Material 2.2
 import QtQuick.Controls 2.2
 import ":/../../../js/Basic.js" as Basic
-
+import QtQuick.Dialogs
 
 ModalBase {
     id: addModal
@@ -115,7 +115,6 @@ ModalBase {
 
 
             onClicked: {
-                //TODO: check
                 const obj = {};
 
                 obj.banner = bannerCheckBox.checked;
@@ -127,8 +126,18 @@ ModalBase {
                     obj[row.name] = row.textValue;
                 }
 
-                con.add_vpn(obj);
-                Basic.addVpn(obj["VPN Name"]);
+                const res = con.add_vpn(obj);
+
+                if(res)
+                {
+                    Basic.addVpn(obj["VPN Name"]);
+                    addModal.close();
+                    vpnAddDetails.clear();
+                    Basic.updateFieldsModalAdd();
+                }
+                else {
+                    warningDialog.visible = true;
+                }
             }
 
 
@@ -136,5 +145,11 @@ ModalBase {
         }
 
     }
+    MessageDialog {
+        id: warningDialog
+        text: "VPN already exists"
+        visible: false
+        title: "Failed to Add VPN"
 
+    }
 }

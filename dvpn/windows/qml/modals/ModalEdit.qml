@@ -6,12 +6,12 @@ import QtQuick.Controls 2.2
 
 
 ModalAdd {
-    id: addModal
+    id: editModal
 
 
         BlueButton {
             id: submitEdit
-            text: "Edit"
+            text: "Save"
 
             anchors.bottomMargin: 16
             anchors.bottom: parent.bottom
