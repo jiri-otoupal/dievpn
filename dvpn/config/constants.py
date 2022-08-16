@@ -57,7 +57,7 @@ class PublicVars:
                     tmp["VPN Name"] = key
                     tmp["selectedVpn"] = "AnyConnect"
                     tmp["cliPath"] = self._credentials[key].pop("cli_path")
-                    tmp["H9ost"] = self._credentials[key].pop("host")
+                    tmp["Host"] = self._credentials[key].pop("host")
                     tmp["Username"] = self._credentials[key].pop("username")
                     tmp["Password"] = self._credentials[key].pop("password")
                     tmp["banner"] = self._credentials[key].pop("banner")
