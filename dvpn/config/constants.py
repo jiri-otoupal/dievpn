@@ -1,4 +1,5 @@
 import json
+import logging
 from builtins import dict
 from typing import Optional
 
@@ -49,6 +50,11 @@ class PublicVars:
     def load_vars(self):
         with open(str(secret_path), "r") as fp:
             self._credentials = json.load(fp)
+            for key, item in self._credentials.items():
+                if "selectedVpn" not in item.keys():
+                    logging.warning("Applying patch for older version")
+                    self._credentials[key]["selectedVpn"] = "AnyConnect"
+        self.save_vars(self._credentials)
 
     @credentials.setter
     def credentials(self, updated: dict):
