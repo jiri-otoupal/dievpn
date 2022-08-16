@@ -27,6 +27,15 @@ class VpnCli(metaclass=SingletonMeta):
     def cli_path_osx(self):
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_state(self, name: str) -> str:
+        """
+        Gets state of VPN
+        :param name:
+        :return: Disconnected | Connected | ...
+        """
+        pass
+
     @classmethod
     def get_default_cli_path(cls):
         if os.name == "nt":

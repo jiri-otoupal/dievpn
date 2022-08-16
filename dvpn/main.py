@@ -1,5 +1,7 @@
 import sys
 from threading import Thread
+from time import sleep
+from typing import Iterable
 
 from PySide6.QtCore import (
     QObject,
@@ -13,18 +15,37 @@ from PySide6.QtGui import Qt, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtWidgets import QApplication
 
-from dvpn.config.constants import PublicVars, CLI_RESOLVE
-from dvpn.modules.tools import connect
-from dvpn.logger import qt_message_handler
 import dvpn.res  # noqa
+from dvpn.config.constants import PublicVars, CLI_RESOLVE
+from dvpn.logger import qt_message_handler
+from dvpn.modules.tools import connect
 
 
 class Bridge(QObject):
-    connectedVPNs = set()
+    periodic_thread = None
+    connectedVPNs: Iterable[str] = set()
     changingVPNs = set()
 
     connectStatusChange = Signal(str, bool, bool, name="connectStatusChange")
     disconnectChange = Signal(str, bool, bool, name="disconnectChange")
+
+    def periodic_check(self):
+        if self.periodic_thread is not None:
+            return False
+        t = Thread(target=self._periodic_check, name="Periodic status Check", daemon=True)
+        self.periodic_thread = t
+        t.start()
+        return True
+
+    def _periodic_check(self):
+        while True:
+            for conn_vpn in set(self.connectedVPNs):
+                creds = PublicVars().credentials[conn_vpn]
+                cli_type = CLI_RESOLVE[creds["selectedVpn"]]
+                cli_instance = cli_type(creds["cliPath"])
+                if "disconnected" in cli_instance.get_state(conn_vpn).lower():
+                    self.disconnect_notify(conn_vpn, cli_instance, False)
+            sleep(0.5)
 
     @Slot(str)
     def log(self, text):
@@ -112,9 +133,10 @@ class Bridge(QObject):
             )
             t.start()
 
-    def disconnect_notify(self, vpn_name, cli):
+    def disconnect_notify(self, vpn_name, cli, reset=True):
         self.disconnectChange.emit(vpn_name, False, True)
-        cli.reset(host=vpn_name)
+        if reset:
+            cli.reset(host=vpn_name)
         # noinspection PyUnresolvedReferences
         self.disconnectChange.emit(vpn_name, False, False)
         self.connectedVPNs.remove(vpn_name)
@@ -131,6 +153,7 @@ def main():
     app.setApplicationName("DieVpn")
     engine = QQmlApplicationEngine()
     bridge = Bridge()
+    bridge.periodic_check()
     context = engine.rootContext()
     context.setContextProperty("con", bridge)
     engine.load(QUrl("qrc:/qml/main.qml"))

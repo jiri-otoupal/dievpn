@@ -20,7 +20,7 @@ class ViscosityCLI(VpnCli):
 
     cli_path_osx = Path("/opt/cisco/anyconnect/bin/vpn")
 
-    def get_state(self, name: str):
+    def get_state(self, name: str) -> str:
         return subprocess.check_output(
             [
                 self.cli_path if self.cli_path else self.get_default_cli_path(),

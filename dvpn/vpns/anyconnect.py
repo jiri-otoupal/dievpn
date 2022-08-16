@@ -21,13 +21,20 @@ class AnyConnectCLI(VpnCli):
         {"name": "Password", "placeholderText": "******", "sensitive": True},
     ]
     cli_path_win = (
-        Path("C:\\")
-        / "Program Files (x86)\\"
-        / "Cisco\\"
-        / "Cisco AnyConnect Secure Mobility Client\\vpncli.exe"
+            Path("C:\\")
+            / "Program Files (x86)\\"
+            / "Cisco\\"
+            / "Cisco AnyConnect Secure Mobility Client\\vpncli.exe"
     )
 
     cli_path_osx = Path("/opt/cisco/anyconnect/bin/vpn")
+
+    def get_state(self, name: str) -> str:
+        stdout = subprocess.check_output([self.cli_path, "state", name]).decode()
+        # Match and remove dot on end
+        vpn_state = re.findall("(.*state:*.) (.*)", stdout)[0][1]
+
+        return vpn_state.replace("\r", "")
 
     def get_connected_vpn(self):
         stdout = subprocess.check_output([self.cli_path, "stats"]).decode()
