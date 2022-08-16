@@ -1,73 +1,127 @@
-import tkinter.messagebox
-from pathlib import Path
-from sys import argv
+import sys
+from threading import Thread
 
-import click as click
-import psutil
+from PySide6.QtCore import QObject, QCoreApplication, QUrl, qInstallMessageHandler, Slot, Signal
+from PySide6.QtGui import Qt, QIcon
+from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtWidgets import QApplication
 
-from dvpn.config.constants import PublicVars
-from dvpn.config.paths import secret_path
+from dvpn.config.constants import PublicVars, CLI_RESOLVE
 from dvpn.modules.tools import connect
-from dvpn.modules.windows import open_gui
+from dvpn.logger import qt_message_handler
+import res  # noqa
 
 
-@click.group()
-def cli():
-    pass
+class Bridge(QObject):
+    connectedVPNs = set()
+    changingVPNs = set()
+
+    connectStatusChange = Signal(str, bool, bool, name="connectStatusChange")
+    disconnectChange = Signal(str, bool, bool, name="disconnectChange")
+
+    @Slot(str)
+    def log(self, text):
+        print(text)
+
+    @Slot(result="QVariantMap")
+    def list_vpn(self) -> dict:
+        return PublicVars().credentials
+
+    @Slot(str, result="QVariantMap")
+    def get_vpn_details(self, vpn_name: str) -> dict:
+        if vpn_name not in PublicVars().credentials.keys():
+            return {}
+        details = PublicVars().credentials[vpn_name]
+        # details["cliPath"] = QUrl.fromLocalFile(details["cliPath"]).toString()
+        return details
+
+    @Slot("QVariantMap", result=bool)
+    def add_vpn(self, obj: dict) -> bool:
+        vpn_name = obj["VPN Name"]
+        if vpn_name not in PublicVars().credentials.keys():
+            PublicVars()[vpn_name] = obj
+            return True
+        return False
+
+    @Slot(str, result=list)
+    def get_vpn_fields(self, vpn_name):
+        cli = CLI_RESOLVE[vpn_name]
+        return cli.fields
+
+    @Slot(str)
+    def connect(self, vpn_name: str):
+        # noinspection PyUnresolvedReferences
+        self.connectStatusChange.emit(vpn_name, False, True)
+        self.changingVPNs.add(vpn_name)
+
+        vpn_conf = PublicVars()[vpn_name]
+        cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
+        t = Thread(target=lambda: connect(cli, vpn_conf["VPN Name"], self),
+                   name=f"Connecting {vpn_conf['VPN Name']}", daemon=True)
+        t.start()
+
+    @Slot(str, "QVariantMap")
+    def edit(self, vpn_name: str, contents: dict):
+        tmp = PublicVars().credentials
+        tmp[vpn_name] = contents
+        PublicVars().credentials = tmp
+
+    @Slot(str)
+    def delete(self, vpn_name: str):
+        tmp = PublicVars().credentials
+        tmp.pop(vpn_name, None)
+        PublicVars().credentials = tmp
+
+    @Slot(str)
+    def connected_notify(self, vpn_name: str):
+        self.connectedVPNs.add(vpn_name)
+
+    @Slot(str)
+    def disconnect(self, vpn_name: str):
+        # noinspection PyUnresolvedReferences
+        self.disconnectChange.emit(vpn_name, True, True)
+        vpn_conf = PublicVars()[vpn_name]
+        cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
+        t = Thread(target=lambda: self.disconnect_notify(vpn_name, cli),
+                   name=f"Disconnecting {vpn_name}", daemon=True)
+        t.start()
+
+    @Slot()
+    def reset(self):
+        for host in set(self.connectedVPNs):
+            creds = PublicVars().credentials[host]
+            cli_type = CLI_RESOLVE[creds["selectedVpn"]]
+            cli = cli_type(str(creds["cliPath"]))
+            t = Thread(target=lambda: self.disconnect_notify(host, cli),
+                       name=f"Disconnecting {host}", daemon=True)
+            t.start()
+
+    def disconnect_notify(self, vpn_name, cli):
+        self.disconnectChange.emit(vpn_name, False, True)
+        cli.reset(host=vpn_name)
+        # noinspection PyUnresolvedReferences
+        self.disconnectChange.emit(vpn_name, False, False)
+        self.connectedVPNs.remove(vpn_name)
 
 
-@cli.command(name="connect")
-@click.argument("host", nargs=1)
-def _connect(host):
-    connect(host)
-
-
-@cli.command(name="disconnect")
-def _disconnect():
-    VpnCli.reset()
-
-
-@cli.command(name="autoresolve")
-def _auto():
-    print("This is not implemented yet")
-    VpnCli.check_accessed()
-
-
-@cli.command()
-def gui():
-    open_gui()
-
-
-def get_status(p):
-    return (p.status() if hasattr(p.status, '__call__'
-                                  ) else p.status)
-
-
-def main():
-    if "gui" not in argv:
-        if not secret_path.exists():
-            print(
-                f"Please first Create secret.json according to README at"
-                f" {str(Path(__file__).resolve().parent / 'config')} or use dvpn gui")
-            exit(1)
-        else:
-            PublicVars()
-
-        if len(PublicVars().credentials.keys()) == 0:
-            print(
-                "No Credentials Found please make sure to add your VPNs before "
-                "continuing "
-                "with dvpn gui")
-
-    processes = [proc.name().lower() if get_status(proc) != psutil.STATUS_ZOMBIE else ""
-                 for
-                 proc in psutil.process_iter()]
-    if "anyconnect" in "".join(processes):
-        tkinter.messagebox.showwarning("AnyConnect is running",
-                                       "End other Any connect instances before usage")
-        exit(1)
-    cli()
+def open_gui():
+    qInstallMessageHandler(qt_message_handler)
+    QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    app = QApplication(sys.argv)
+    app.setOrganizationName("Jiri Otoupal")
+    app.setOrganizationDomain("https://github.com/jiri-otoupal/dievpn")
+    app.setWindowIcon(QIcon(":/icons/dievpn.ico"))
+    app.setApplicationName("DieVpn")
+    engine = QQmlApplicationEngine()
+    bridge = Bridge()
+    context = engine.rootContext()
+    context.setContextProperty("con", bridge)
+    engine.load(QUrl("qrc:/qml/main.qml"))
+    if not engine.rootObjects():
+        sys.exit(-1)
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":
-    main()
+    open_gui()

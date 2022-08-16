@@ -96,7 +96,7 @@ ApplicationWindow {
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                 Component.onCompleted: {
-                         var vpns = con.list_vpn();
+                         let vpns = con.list_vpn();
 
                          for (const [key, value] of Object.entries(vpns)) {
                                 Basic.addVpn(key);

@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.1
 
 
 RowLayout {
-    property string value: control.text
+    property string value
     property string placeholderText
 
     TextRegular {
@@ -15,6 +15,7 @@ RowLayout {
 
     TextFieldRegular {
         id: control
+        text: parent.value
 
         placeholderText: parent.placeholderText
         anchors.left: placeLabel.right
