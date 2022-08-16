@@ -53,9 +53,15 @@ class PublicVars:
             for key, item in self._credentials.items():
                 if "selectedVpn" not in item.keys():
                     logging.warning("Applying patch for older version")
-                    self._credentials[key]["VPN Name"] = key
-                    self._credentials[key]["selectedVpn"] = "AnyConnect"
-                    self._credentials[key]["cliPath"] = AnyConnectCLI.get_default_cli_path()
+                    tmp = dict()
+                    tmp["VPN Name"] = key
+                    tmp["selectedVpn"] = "AnyConnect"
+                    tmp["cliPath"] = self._credentials[key].pop("cli_path")
+                    tmp["H9ost"] = self._credentials[key].pop("host")
+                    tmp["Username"] = self._credentials[key].pop("username")
+                    tmp["Password"] = self._credentials[key].pop("password")
+                    tmp["banner"] = self._credentials[key].pop("banner")
+                    self._credentials[key] = tmp
 
         self.save_vars(self._credentials)
 
