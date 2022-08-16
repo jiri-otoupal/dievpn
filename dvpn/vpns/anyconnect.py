@@ -14,14 +14,18 @@ else:
 
 
 class AnyConnectCLI(VpnCli):
-    fields = [{"name": "VPN Name", "placeholderText": "My Zoo VPN"},
-              {"name": "Host", "placeholderText": "favourite-zoo.com"},
-              {"name": "Username", "placeholderText": "giraffe"},
-              {"name": "Password", "placeholderText": "******", "sensitive": True}
-              ]
-    cli_path_win = Path("C:\\") / \
-                   "Program Files (x86)\\" / "Cisco\\" / \
-                   "Cisco AnyConnect Secure Mobility Client\\vpncli.exe"
+    fields = [
+        {"name": "VPN Name", "placeholderText": "My Zoo VPN"},
+        {"name": "Host", "placeholderText": "favourite-zoo.com"},
+        {"name": "Username", "placeholderText": "giraffe"},
+        {"name": "Password", "placeholderText": "******", "sensitive": True},
+    ]
+    cli_path_win = (
+        Path("C:\\")
+        / "Program Files (x86)\\"
+        / "Cisco\\"
+        / "Cisco AnyConnect Secure Mobility Client\\vpncli.exe"
+    )
 
     cli_path_osx = Path("/opt/cisco/anyconnect/bin/vpn")
 
@@ -42,7 +46,7 @@ class AnyConnectCLI(VpnCli):
         pipe = wexpect.spawn(
             command=cli_path if cli_path else self.get_default_cli_path(),
             args=arguments,
-            encoding="utf-8"
+            encoding="utf-8",
         )
         output = pipe.readlines()
 
@@ -54,8 +58,10 @@ class AnyConnectCLI(VpnCli):
     def __connect(self, host, username, password, **kwargs) -> dict:
         print(f">> Connecting to {host}")
         self.process_pipe = wexpect.spawn(
-            command=self.cli_path, args=["connect", f"{host}"],
-            encoding="utf-8", timeout=15
+            command=self.cli_path,
+            args=["connect", f"{host}"],
+            encoding="utf-8",
+            timeout=15,
         )
 
         print("     ... Waiting for VPN to complete its chores")
@@ -81,8 +87,12 @@ class AnyConnectCLI(VpnCli):
         self.reset()
 
         try:
-            stat = self.__connect(host=creds["Host"], username=creds["Username"],
-                                  password=creds["Password"], **creds)
+            stat = self.__connect(
+                host=creds["Host"],
+                username=creds["Username"],
+                password=creds["Password"],
+                **creds,
+            )
         except wexpect.TIMEOUT as ex:
             stat = {"reason": "invalid credentials"}
 

@@ -10,10 +10,7 @@ CONNECTED_CLI = None
 
 DEFAULT_TITLE = "Die VPN Control"
 
-CLI_RESOLVE = {
-    "AnyConnect": AnyConnectCLI,
-    "Viscosity": ViscosityCLI
-}
+CLI_RESOLVE = {"AnyConnect": AnyConnectCLI, "Viscosity": ViscosityCLI}
 
 
 class PublicVars:

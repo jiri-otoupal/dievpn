@@ -1,11 +1,13 @@
 from pathlib import Path
 
-RESOURCE_DIRS = [Path(d) for d in ["icons", "qml", "qml/custom", "images", "qml/modals", "js"]]
+RESOURCE_DIRS = [
+    Path(d) for d in ["icons", "qml", "qml/custom", "images", "qml/modals", "js"]
+]
 
 with open("main.qrc", "w", encoding="utf-8") as f:
+
     def fprint(string=""):
         print(string, file=f)
-
 
     fprint('<!DOCTYPE RCC><RCC version="1.0">')
     fprint("  <qresource>")

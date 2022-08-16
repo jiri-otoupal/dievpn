@@ -16,7 +16,9 @@ def connect(cli: VpnCli, host: str, bridge: Optional["Bridge"]) -> (bool, dict):
             bridge.connectStatusChange.emit(host, out[0], False)
             bridge.connectedVPNs.add(host)
     except Exception as ex:
-        print("DieVpn encountered problem with anyconnect, can be cause by stuck "
-              "ovpn agent from previous instance or already running cli try to check"
-              " for other cli or anyconnect processes or reboot computer")
+        print(
+            "DieVpn encountered problem with anyconnect, can be cause by stuck "
+            "ovpn agent from previous instance or already running cli try to check"
+            " for other cli or anyconnect processes or reboot computer"
+        )
         return False, {"exception": str(ex)}

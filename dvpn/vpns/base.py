@@ -5,13 +5,14 @@ from dvpn.modules.vpn_cli_singleton import SingletonMeta
 
 
 class VpnCli(metaclass=SingletonMeta):
-
     def __init__(self, cli_path):
         print("\nWelcome to DieVPN\n")
         print(
             "Make sure to kill all VPN clients before usage, as cli would collide with it"
         )
-        print("If this is stuck, make sure you are NOT running it in virtual environment !")
+        print(
+            "If this is stuck, make sure you are NOT running it in virtual environment !"
+        )
         self.excluded_fields = []
         self.process_pipe = None
         self.cli_path = cli_path

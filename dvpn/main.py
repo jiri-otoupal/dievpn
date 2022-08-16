@@ -1,7 +1,14 @@
 import sys
 from threading import Thread
 
-from PySide6.QtCore import QObject, QCoreApplication, QUrl, qInstallMessageHandler, Slot, Signal
+from PySide6.QtCore import (
+    QObject,
+    QCoreApplication,
+    QUrl,
+    qInstallMessageHandler,
+    Slot,
+    Signal,
+)
 from PySide6.QtGui import Qt, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtWidgets import QApplication
@@ -56,8 +63,11 @@ class Bridge(QObject):
 
         vpn_conf = PublicVars()[vpn_name]
         cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
-        t = Thread(target=lambda: connect(cli, vpn_conf["VPN Name"], self),
-                   name=f"Connecting {vpn_conf['VPN Name']}", daemon=True)
+        t = Thread(
+            target=lambda: connect(cli, vpn_conf["VPN Name"], self),
+            name=f"Connecting {vpn_conf['VPN Name']}",
+            daemon=True,
+        )
         t.start()
 
     @Slot(str, "QVariantMap")
@@ -82,8 +92,11 @@ class Bridge(QObject):
         self.disconnectChange.emit(vpn_name, True, True)
         vpn_conf = PublicVars()[vpn_name]
         cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
-        t = Thread(target=lambda: self.disconnect_notify(vpn_name, cli),
-                   name=f"Disconnecting {vpn_name}", daemon=True)
+        t = Thread(
+            target=lambda: self.disconnect_notify(vpn_name, cli),
+            name=f"Disconnecting {vpn_name}",
+            daemon=True,
+        )
         t.start()
 
     @Slot()
@@ -92,8 +105,11 @@ class Bridge(QObject):
             creds = PublicVars().credentials[host]
             cli_type = CLI_RESOLVE[creds["selectedVpn"]]
             cli = cli_type(str(creds["cliPath"]))
-            t = Thread(target=lambda: self.disconnect_notify(host, cli),
-                       name=f"Disconnecting {host}", daemon=True)
+            t = Thread(
+                target=lambda: self.disconnect_notify(host, cli),
+                name=f"Disconnecting {host}",
+                daemon=True,
+            )
             t.start()
 
     def disconnect_notify(self, vpn_name, cli):

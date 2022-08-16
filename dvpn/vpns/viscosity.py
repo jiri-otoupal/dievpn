@@ -16,16 +16,18 @@ class ViscosityCLI(VpnCli):
     fields = [
         {"name": "VPN Name", "placeholderText": "Name of VPN in Viscosity"},
     ]
-    cli_path_win = Path("C:\\") / \
-                   "Program Files" / "Viscosity" / \
-                   "ViscosityCC.exe"
+    cli_path_win = Path("C:\\") / "Program Files" / "Viscosity" / "ViscosityCC.exe"
 
     cli_path_osx = Path("/opt/cisco/anyconnect/bin/vpn")
 
     def get_state(self, name: str):
         return subprocess.check_output(
-            [self.cli_path if self.cli_path else self.get_default_cli_path(), "getstate",
-             name]).decode()
+            [
+                self.cli_path if self.cli_path else self.get_default_cli_path(),
+                "getstate",
+                name,
+            ]
+        ).decode()
 
     def get_connected_vpn(self):
         pass
@@ -36,7 +38,7 @@ class ViscosityCLI(VpnCli):
         pipe = wexpect.spawn(
             command=cli_path if cli_path else self.get_default_cli_path(),
             args=["disconnect", "all" if host is None else host],
-            encoding="utf-8"
+            encoding="utf-8",
         )
         output = pipe.readline()
 
@@ -48,11 +50,15 @@ class ViscosityCLI(VpnCli):
         self.process_pipe = wexpect.spawn(
             command=self.cli_path if self.cli_path else self.get_default_cli_path(),
             args=["connect", f"{host}"],
-            encoding="utf-8", timeout=15
+            encoding="utf-8",
+            timeout=15,
         )
         output = self.process_pipe.readline()
 
-        while "Connected" not in (state_conn := self.get_state(host)) and "Disconnected" not in state_conn:
+        while (
+            "Connected" not in (state_conn := self.get_state(host))
+            and "Disconnected" not in state_conn
+        ):
             sleep(0.1)
 
         logging.info("".join(output))
