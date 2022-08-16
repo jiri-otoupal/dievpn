@@ -54,6 +54,8 @@ class PublicVars:
                 if "selectedVpn" not in item.keys():
                     logging.warning("Applying patch for older version")
                     self._credentials[key]["selectedVpn"] = "AnyConnect"
+                    self._credentials[key]["cliPath"] = AnyConnectCLI.get_default_cli_path()
+
         self.save_vars(self._credentials)
 
     @credentials.setter
