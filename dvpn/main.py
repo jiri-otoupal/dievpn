@@ -16,7 +16,7 @@ from PySide6.QtWidgets import QApplication
 from dvpn.config.constants import PublicVars, CLI_RESOLVE
 from dvpn.modules.tools import connect
 from dvpn.logger import qt_message_handler
-import res  # noqa
+import dvpn.res  # noqa
 
 
 class Bridge(QObject):
@@ -120,7 +120,7 @@ class Bridge(QObject):
         self.connectedVPNs.remove(vpn_name)
 
 
-def open_gui():
+def main():
     qInstallMessageHandler(qt_message_handler)
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
@@ -140,4 +140,4 @@ def open_gui():
 
 
 if __name__ == "__main__":
-    open_gui()
+    main()
