@@ -39,12 +39,19 @@ class Bridge(QObject):
 
     def _periodic_check(self):
         while True:
-            for conn_vpn in set(self.connectedVPNs):
-                creds = PublicVars().credentials[conn_vpn]
+            for vpn_name in set(self.connectedVPNs):
+                # Wait for previous operation to finish
+                while vpn_name in self.changingVPNs:
+                    sleep(0.1)
+
+                creds = PublicVars().credentials[vpn_name]
                 cli_type = CLI_RESOLVE[creds["selectedVpn"]]
                 cli_instance = cli_type(creds["cliPath"])
-                if "disconnected" in cli_instance.get_state(conn_vpn).lower():
-                    self.disconnect_notify(conn_vpn, cli_instance, False)
+                state = cli_instance.get_state(vpn_name).lower()
+
+                if "disconnected" in state:
+                    self.disconnect_notify(vpn_name, cli_instance, False)
+
             sleep(0.5)
 
     @Slot(str)
@@ -107,6 +114,7 @@ class Bridge(QObject):
     def connected_notify(self, vpn_name: str):
         self.connectedVPNs.add(vpn_name)
 
+
     @Slot(str)
     def disconnect(self, vpn_name: str):
         # noinspection PyUnresolvedReferences
@@ -123,6 +131,7 @@ class Bridge(QObject):
     @Slot()
     def reset(self):
         for host in set(self.connectedVPNs):
+            self.changingVPNs.add(host)
             creds = PublicVars().credentials[host]
             cli_type = CLI_RESOLVE[creds["selectedVpn"]]
             cli = cli_type(str(creds["cliPath"]))
@@ -139,7 +148,8 @@ class Bridge(QObject):
             cli.reset(host=vpn_name)
         # noinspection PyUnresolvedReferences
         self.disconnectChange.emit(vpn_name, False, False)
-        self.connectedVPNs.remove(vpn_name)
+        self.connectedVPNs.discard(vpn_name)
+        self.changingVPNs.discard(vpn_name)
 
 
 def main():

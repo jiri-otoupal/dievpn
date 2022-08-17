@@ -22,3 +22,5 @@ def connect(cli: VpnCli, host: str, bridge: Optional["Bridge"]) -> (bool, dict):
             f" for other cli or anyconnect processes or reboot computer Exception {ex}"
         )
         return False, {"exception": str(ex)}
+    finally:
+        bridge.changingVPNs.discard(host)

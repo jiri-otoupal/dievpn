@@ -11,7 +11,7 @@ __description__ = (
     " with use of auto switching based on resolved hostnames and saved credentials"
 )
 
-__version__ = "0.9.9"
+__version__ = "1.0.0"
 __author__ = "Jiri Otoupal"
 __author_email__ = "jiri-otoupal@ips-database.eu"
 __license__ = "Apache 2.0"
