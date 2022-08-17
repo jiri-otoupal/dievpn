@@ -24,7 +24,8 @@ class TunnelblickCLI(VpnCli):
         return subprocess.check_output(
             [
                 self.cli_path if self.cli_path else self.get_default_cli_path(),
-                "getstate",
+                "-e", '"tell application \"/Applications/Tunnelblick.app\""', "-e",
+                f'"state \"{name}\""', '-e "end tell"',
                 name,
             ]
         ).decode()
