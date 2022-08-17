@@ -19,6 +19,7 @@ import dvpn.res  # noqa
 from dvpn.config.constants import PublicVars, CLI_RESOLVE
 from dvpn.logger import qt_message_handler
 from dvpn.modules.tools import connect
+from dvpn.vpns.base import VpnCli
 
 
 class Bridge(QObject):
@@ -26,8 +27,13 @@ class Bridge(QObject):
     connectedVPNs: Iterable[str] = set()
     changingVPNs = set()
 
+    disconnectBtnChangeEnabled = Signal(bool, str, name="disconnectBtnChangeEnabled")
     connectStatusChange = Signal(str, bool, bool, name="connectStatusChange")
     disconnectChange = Signal(str, bool, bool, name="disconnectChange")
+
+    @Slot(result=list)
+    def get_available_cli(self) -> list:
+        return list(CLI_RESOLVE.keys())
 
     def periodic_check(self):
         if self.periodic_thread is not None:
@@ -39,7 +45,8 @@ class Bridge(QObject):
 
     def _periodic_check(self):
         while True:
-            for vpn_name in set(self.connectedVPNs):
+            for vpn_name in list(PublicVars().credentials.keys()):
+
                 # Wait for previous operation to finish
                 while vpn_name in self.changingVPNs:
                     sleep(0.1)
@@ -51,6 +58,14 @@ class Bridge(QObject):
 
                 if "disconnected" in state:
                     self.disconnect_notify(vpn_name, cli_instance, False)
+                    break
+
+                elif "connected" in state and vpn_name not in self.connectedVPNs:
+                    self.disconnectBtnChangeEnabled.emit(True, vpn_name)
+                    break
+
+                # Limit CPU usage
+                sleep(0.1)
 
             sleep(0.5)
 
@@ -77,6 +92,11 @@ class Bridge(QObject):
             PublicVars()[vpn_name] = obj
             return True
         return False
+
+    @Slot(str, result=str)
+    def get_vpn_default_cli(self, vpn_name):
+        cli: VpnCli = CLI_RESOLVE[vpn_name]
+        return cli.get_default_cli_path()
 
     @Slot(str, result=list)
     def get_vpn_fields(self, vpn_name):
@@ -113,7 +133,6 @@ class Bridge(QObject):
     @Slot(str)
     def connected_notify(self, vpn_name: str):
         self.connectedVPNs.add(vpn_name)
-
 
     @Slot(str)
     def disconnect(self, vpn_name: str):

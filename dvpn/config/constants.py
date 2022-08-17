@@ -5,13 +5,15 @@ from typing import Optional
 
 from dvpn.config.paths import secret_path
 from dvpn.vpns.anyconnect import AnyConnectCLI
+from dvpn.vpns.tunnelblick import TunnelblickCLI
 from dvpn.vpns.viscosity import ViscosityCLI
 
 CONNECTED_CLI = None
 
 DEFAULT_TITLE = "Die VPN Control"
 
-CLI_RESOLVE = {"AnyConnect": AnyConnectCLI, "Viscosity": ViscosityCLI}
+CLI_RESOLVE = {"AnyConnect": AnyConnectCLI, "Viscosity": ViscosityCLI,
+               "Tunnelblick": TunnelblickCLI}
 
 
 class PublicVars:

@@ -22,7 +22,10 @@ ModalBase {
         font.family: "Roboto"
         font.pixelSize: 12
 
-        model: ["AnyConnect","Viscosity"]
+        Component.onCompleted: {
+            selectVpn.model = con.get_available_cli();
+        }
+
 
         onCurrentTextChanged: {
 

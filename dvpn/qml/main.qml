@@ -25,12 +25,19 @@ ApplicationWindow {
 
     property string connectedVPN: null
 
-    signal connectStatusChange(string vpn_name,bool connected, bool running)
-    signal disconnectChange(string vpn_name,bool connected, bool running)
+    signal connectStatusChange(string vpn_name, bool connected, bool running)
+    signal disconnectChange(string vpn_name, bool connected, bool running)
+    signal disconnectBtnChangeEnabled(bool state, string vpn_name)
 
     Component.onCompleted: {
         con.connectStatusChange.connect(window.connectStatusChange);
         con.disconnectChange.connect(window.disconnectChange);
+        con.disconnectBtnChangeEnabled.connect(window.disconnectBtnChangeEnabled);
+    }
+
+    onDisconnectBtnChangeEnabled: function(state, vpn_name){
+        disconnectBtn.enabled = state;
+        window.connectedVPN = vpn_name;
     }
 
     onDisconnectChange: function(vpn_name,connected, running){

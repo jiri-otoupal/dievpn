@@ -21,11 +21,13 @@ ModalBase {
         font.family: "Roboto"
         font.pixelSize: 12
 
-        model: ["AnyConnect","Viscosity"]
+        Component.onCompleted: {
+            selectVpn.model = con.get_available_cli();
+        }
 
         onCurrentTextChanged: {
             vpnDetails.clear();
-            Basic.updateFieldsModalAdd();
+            Basic.updateFieldsModalAdd(true);
 
         }
     }
@@ -59,9 +61,7 @@ ModalBase {
             ListView {
                 Component.onCompleted: {
                     vpnDetails.clear();
-                    Basic.updateFieldsModalAdd();
-
-
+                    Basic.updateFieldsModalAdd(true);
                 }
                 model: ListModel {
                     id: vpnDetails
@@ -134,7 +134,7 @@ ModalBase {
             if (res) {
                 Basic.addVpn(obj["VPN Name"]);
                 vpnDetails.clear();
-                Basic.updateFieldsModalAdd();
+                Basic.updateFieldsModalAdd(true);
                 addModal.close();
             } else {
                 warningDialog.visible = true;

@@ -26,24 +26,36 @@ function updateEdit() {
                 name: key,
                 text: details[key]
             }
-            vpnDetails.append(arr);
+            vpnDetails.insert(0, arr);
         }
     }
 }
 
-function updateFieldsModalAdd() {
-    const fields = con.get_vpn_fields(selectVpn.currentText);
-    for (var i = 0; i < fields.length; i++) {
-        vpnDetails.append(fields[i]);
-    }
+function updateFieldsModalEdit(fill_cli_path = false) {
+    const vpn_name = editModal.selectVpn.currentText;
+    updateFieldsModal(fill_cli_path, vpn_name);
 }
 
-function updateFieldsModalEdit() {
-    const fields = con.get_vpn_fields(selectVpn.currentText);
-    for (var i = 0; i < fields.length; i++) {
+function updateFieldsModalAdd(fill_cli_path = false) {
+    const vpn_name = selectVpn.currentText;
+    updateFieldsModal(fill_cli_path, vpn_name);
+}
+
+function updateFieldsModal(fill_cli_path = false, vpn_name) {
+    // Protect against crash
+    if (vpn_name === "")
+        return
+
+    const fields = con.get_vpn_fields(vpn_name);
+
+    for (let i = 0; i < fields.length; i++) {
         vpnDetails.append(fields[i]);
     }
+
+    if (fill_cli_path)
+        cliPath.value = con.get_vpn_default_cli(vpn_name)
 }
+
 
 function changeVpn(vpn_name, connected, running) {
     for (let i = 0; vpn_model.count > i; i++) {
