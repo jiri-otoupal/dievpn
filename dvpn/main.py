@@ -106,8 +106,8 @@ class Bridge(QObject):
     @Slot(str)
     def connect(self, vpn_name: str):
         # noinspection PyUnresolvedReferences
-        self.connectStatusChange.emit(vpn_name, False, True)
         self.changingVPNs.add(vpn_name)
+        self.connectStatusChange.emit(vpn_name, False, True)
 
         vpn_conf = PublicVars()[vpn_name]
         cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
@@ -182,7 +182,7 @@ def main():
     app.setApplicationName("DieVpn")
     engine = QQmlApplicationEngine()
     bridge = Bridge()
-    bridge.periodic_check()
+    # bridge.periodic_check()
     context = engine.rootContext()
     context.setContextProperty("con", bridge)
     engine.load(QUrl("qrc:/qml/main.qml"))
