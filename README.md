@@ -10,6 +10,8 @@
 #### VPNs
 
 * `AnyConnectVPN` - Cisco
+* `Tunnelblick`
+* `Viscosity`
 
 #### OS
 
