@@ -28,7 +28,7 @@ setup(
     python_requires=">=3.6,<4",
     install_requires=["wexpect==4.0.0; sys_platform == 'win32'",
                       "pexpect==4.8.0; sys_platform != 'win32'",
-                      "click==8.1.3", "psutil==5.9.1","pyside6==6.3.1"],
+                      "click==8.1.3", "psutil","pyside6==6.3.1"],
     extras_require={
         "dev": ["black==22.*"],
     },
