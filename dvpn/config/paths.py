@@ -1,3 +1,3 @@
 from pathlib import Path
 
-secret_path = Path(__file__).resolve().parent.parent / "config" / "secret.json"
+secret_path = Path().home() / ".dvpn" / "secret.json"

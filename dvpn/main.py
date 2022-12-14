@@ -17,6 +17,7 @@ from PySide6.QtWidgets import QApplication
 
 import dvpn.res  # noqa
 from dvpn.config.constants import PublicVars, CLI_RESOLVE
+from dvpn.config.paths import secret_path
 from dvpn.logger import qt_message_handler
 from dvpn.modules.tools import connect
 from dvpn.vpns.base import VpnCli
@@ -172,6 +173,7 @@ class Bridge(QObject):
 
 
 def main():
+    secret_path.parent.mkdir(exist_ok=True)
     qInstallMessageHandler(qt_message_handler)
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
