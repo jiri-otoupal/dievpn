@@ -5,3 +5,4 @@
 /dist/
 /dvpn/config/secret.json
 build-all.cmd
+/Generate_Resources.bat

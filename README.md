@@ -35,10 +35,7 @@ or
 pip3 install dvpn
 ```
 
-## MacOs additional commands
-Install tkinter if you want to be able to use **GUI** if you do not have it installed with
 
-`brew install python-tk`
 
 ## How to set up with GUI
 

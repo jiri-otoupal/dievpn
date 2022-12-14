@@ -1,40 +1,26 @@
-from tkinter import Tk
+from time import sleep
+from typing import Optional
 
 from dvpn.config.constants import PublicVars
-from dvpn.modules.vpncli import VpnCli
-
-buttons = dict()
+from dvpn.vpns.base import VpnCli
 
 
-def state_buttons(state_out):
-    for btn in buttons.values():
-        btn.config(state=state_out)
-
-
-def clear_buttons():
-    tmp = dict(buttons)
-    tmp.pop("Disconnect")
-    for btn in tmp.items():
-        try:
-            btn[1].config(bg="lightgray", fg="black", text=btn[0])
-        except Exception:
-            # Just tkinter and its sometime problem with config
-            pass
-
-
-def reopen(last_window: Tk):
-    last_window.destroy()
-    from dvpn.modules.windows import open_gui
-    open_gui()
-
-
-def connect(host) -> (bool, dict):
+def connect(cli: VpnCli, host: str, bridge: Optional["Bridge"]) -> (bool, dict):
+    while len(bridge.connectedVPNs):
+        sleep(0.1)
     creds = PublicVars().credentials[host]
-    vpncli = VpnCli(str(creds["cli_path"]))
+    vpncli = type(cli)(str(creds["cliPath"]))
     try:
-        return vpncli.connect(creds)
+        out = vpncli.connect(creds)
+        if bridge:
+            bridge.connectStatusChange.emit(host, out[0], False)
+            bridge.connectedVPNs.add(host)
     except Exception as ex:
-        print("DieVpn encountered problem with anyconnect, can be cause by stucked "
-              "ovpn agent from previous instance or already running cli try to check"
-              " for other cli or anyconnect processes or reboot computer")
+        print(
+            "DieVpn encountered problem with anyconnect, can be cause by stuck "
+            "ovpn agent from previous instance or already running cli try to check"
+            f" for other cli or anyconnect processes or reboot computer Exception {ex}"
+        )
         return False, {"exception": str(ex)}
+    finally:
+        bridge.changingVPNs.discard(host)
