@@ -112,7 +112,6 @@ ModalBase {
         selectVpn.currentIndex = index;
         Basic.updateEdit();
 
-
     }
 
 

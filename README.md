@@ -52,6 +52,16 @@ pip3 install dvpn
 * **Now you can use cli commands**
 * _Future Release will contain auto vpn resolve `dvpn autoresolve`_
 
+For Tunnelblick you must install tunnelblickctl
+
+on macOS use:
+
+```
+brew tap benwebber/tunnelblickctl
+brew install tunnelblickctl
+```
+
+
 ## How to set up Manually
 
 * Clone repository with `git clone https://github.com/jiri-otoupal/dievpn.git`

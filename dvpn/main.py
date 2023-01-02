@@ -125,6 +125,7 @@ class Bridge(QObject):
         tmp[vpn_name] = contents
         PublicVars().credentials = tmp
 
+
     @Slot(str)
     def delete(self, vpn_name: str):
         tmp = PublicVars().credentials
@@ -165,7 +166,7 @@ class Bridge(QObject):
     def disconnect_notify(self, vpn_name, cli, reset=True):
         self.disconnectChange.emit(vpn_name, False, True)
         if reset:
-            cli.reset(host=vpn_name)
+            cli.reset(vpn_name=vpn_name)
         # noinspection PyUnresolvedReferences
         self.disconnectChange.emit(vpn_name, False, False)
         self.connectedVPNs.discard(vpn_name)
