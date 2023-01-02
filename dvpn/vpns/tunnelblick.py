@@ -1,4 +1,5 @@
 import logging
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -36,7 +37,9 @@ class TunnelblickCLI(VpnCli):
     def reset(self, cli_path=None, host: str = None):
         print("...Disconnecting")
 
-        subprocess.check_output([self.get_default_cli_path(), "disconnect", "-a"])
+        os.system(
+            f"{self.get_default_cli_path()} launch"
+        )
 
         while host is not None and not (
             "disconnected" in self.get_state(host).lower()
@@ -46,8 +49,8 @@ class TunnelblickCLI(VpnCli):
 
     def __connect(self, vpn_name) -> dict:
         print(f">> Connecting to {vpn_name}")
-        self.output = output = subprocess.check_output(
-            [self.get_default_cli_path(), "connect", vpn_name]
+        os.system(
+            f"{self.get_default_cli_path()} connect {vpn_name}"
         )
 
         while not (
@@ -58,10 +61,9 @@ class TunnelblickCLI(VpnCli):
         ):
             sleep(0.1)
 
-        logging.info("".join(output))
         state = self.get_state(vpn_name).lower()
         connected = "connected" in state or "network_access" in state
-        return {"connected": connected, "reason": "VPN Error", "log": output}
+        return {"connected": connected, "reason": "VPN Error"}
 
     def connect(self, creds: dict) -> (bool, dict):
         print("~ Resetting connection")
@@ -69,8 +71,8 @@ class TunnelblickCLI(VpnCli):
             self.reset()
         except subprocess.CalledProcessError:
             print("Launching Tunnelblick")
-            subprocess.check_output(
-                [self.get_default_cli_path(), "launch"]
+            os.system(
+                f"{self.get_default_cli_path()} launch"
             )
 
         try:
