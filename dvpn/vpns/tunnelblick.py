@@ -18,17 +18,17 @@ class TunnelblickCLI(VpnCli):
     ]
     cli_path_win = "NOT EXISTENT ! MAC OS ONLY"
 
-    cli_path_osx = Path("osascript").resolve()
+    cli_path_osx = "tunnelblickctl"
 
-    def get_state(self, name: str) -> str:
-        return subprocess.check_output(
-            [
-                self.cli_path if self.cli_path else self.get_default_cli_path(),
-                "-e", '"tell application \"/Applications/Tunnelblick.app\""', "-e",
-                f'"state \"{name}\""', '-e "end tell"',
-                name,
-            ]
+    def get_state(self, vpn_name: str) -> str:
+        all_vpns = subprocess.check_output(
+            [self.get_default_cli_path(), "status"]
         ).decode()
+        for line in all_vpns.split("\n"):
+            info = line.split()
+            if vpn_name == info[0]:
+                return info[1]
+        return None
 
     def get_connected_vpn(self):
         pass
@@ -36,41 +36,42 @@ class TunnelblickCLI(VpnCli):
     def reset(self, cli_path=None, host: str = None):
         print("...Disconnecting")
 
-        pipe = wexpect.spawn(
-            command=cli_path if cli_path else self.get_default_cli_path(),
-            args=["-e", '"tell application \"/Applications/Tunnelblick.app\""', "-e",
-                  f'"disconnect \"{host}\""', '-e "end tell"'],
-            encoding="utf-8",
-        )
-        output = pipe.readline()
+        subprocess.check_output([self.get_default_cli_path(), "disconnect", "-a"])
 
-        while host is not None and "Disconnected" not in self.get_state(host):
+        while host is not None and not (
+            "disconnected" in self.get_state(host).lower()
+            or "exiting" in self.get_state(host).lower()
+        ):
             sleep(0.1)
 
-    def __connect(self, host) -> dict:
-        print(f">> Connecting to {host}")
-        self.process_pipe = wexpect.spawn(
-            command=self.cli_path if self.cli_path else self.get_default_cli_path(),
-            args=["-e", '"tell application \"/Applications/Tunnelblick.app\""', "-e",
-                  f'"connect \"{host}\""', '-e "end tell"'],
-            encoding="utf-8",
-            timeout=15,
+    def __connect(self, vpn_name) -> dict:
+        print(f">> Connecting to {vpn_name}")
+        self.output = output = subprocess.check_output(
+            [self.get_default_cli_path(), "connect", vpn_name]
         )
-        output = self.process_pipe.readline()
 
-        while (
-                "Connected" not in (state_conn := self.get_state(host))
-                and "Disconnected" not in state_conn
+        while not (
+            "connected" in (state_conn := self.get_state(vpn_name).lower())
+            or "disconnected" in state_conn
+            or "network_access" in state_conn
+            or "exiting" in state_conn
         ):
             sleep(0.1)
 
         logging.info("".join(output))
-        connected = "Connected" in self.get_state(host)
+        state = self.get_state(vpn_name).lower()
+        connected = "connected" in state or "network_access" in state
         return {"connected": connected, "reason": "VPN Error", "log": output}
 
     def connect(self, creds: dict) -> (bool, dict):
         print("~ Resetting connection")
-        self.reset()
+        try:
+            self.reset()
+        except subprocess.CalledProcessError:
+            print("Launching Tunnelblick")
+            subprocess.check_output(
+                [self.get_default_cli_path(), "launch"]
+            )
 
         try:
             stat = self.__connect(creds["VPN Name"])

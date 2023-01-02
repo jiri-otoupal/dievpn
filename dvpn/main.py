@@ -39,7 +39,9 @@ class Bridge(QObject):
     def periodic_check(self):
         if self.periodic_thread is not None:
             return False
-        t = Thread(target=self._periodic_check, name="Periodic status Check", daemon=True)
+        t = Thread(
+            target=self._periodic_check, name="Periodic status Check", daemon=True
+        )
         self.periodic_thread = t
         t.start()
         return True
@@ -150,17 +152,17 @@ class Bridge(QObject):
 
     @Slot()
     def reset(self):
+        Thread(
+            target=self.disconnect_joined, name="Disconnect All", daemon=True
+        ).start()
+
+    def disconnect_joined(self):
         for host in set(self.connectedVPNs):
             self.changingVPNs.add(host)
             creds = PublicVars().credentials[host]
             cli_type = CLI_RESOLVE[creds["selectedVpn"]]
             cli = cli_type(str(creds["cliPath"]))
-            t = Thread(
-                target=lambda: self.disconnect_notify(host, cli),
-                name=f"Disconnecting {host}",
-                daemon=True,
-            )
-            t.start()
+            self.disconnect_notify(host, cli),
 
     def disconnect_notify(self, vpn_name, cli, reset=True):
         self.disconnectChange.emit(vpn_name, False, True)

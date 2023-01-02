@@ -26,6 +26,10 @@ RowLayout {
 
         readOnly: false
 
+        onTextChanged: {
+            parent.value = control.text;
+        }
+
         function onBrowseClicked() {
             cliFileDialog.visible=true;
         }
@@ -36,7 +40,7 @@ RowLayout {
             options: FileDialog.ReadOnly
 
             onAccepted: {
-                control.text= cliFileDialog.file.toString()
+                parent.value= cliFileDialog.file.toString()
             }
             onRejected: {}
 
