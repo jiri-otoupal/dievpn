@@ -26,23 +26,21 @@ class TunnelblickCLI(VpnCli):
         ).decode()
         for line in all_vpns.split("\n"):
             info = line.split()
-            if vpn_name in info[0]:
+            if vpn_name == info[0]:
                 return info[1]
         return None
 
     def get_connected_vpn(self):
         pass
 
-    def reset(self, cli_path=None, vpn_name: str = None):
+    def reset(self, cli_path=None, host: str = None):
         print("...Disconnecting")
 
-        subprocess.check_output(
-            [self.get_default_cli_path(), "disconnect", "-a"]
-        )
+        subprocess.check_output([self.get_default_cli_path(), "disconnect", "-a"])
 
-        while vpn_name is not None and (
-            "disconnected" not in self.get_state(vpn_name).lower()
-            or "exiting" not in self.get_state(vpn_name).lower()
+        while host is not None and not (
+            "disconnected" in self.get_state(host).lower()
+            or "exiting" in self.get_state(host).lower()
         ):
             sleep(0.1)
 
@@ -52,19 +50,28 @@ class TunnelblickCLI(VpnCli):
             [self.get_default_cli_path(), "connect", vpn_name]
         )
 
-        while (
-            "connected" not in (state_conn := self.get_state(vpn_name)).lower()
-            and "disconnected" not in state_conn.lower()
+        while not (
+            "connected" in (state_conn := self.get_state(vpn_name).lower())
+            or "disconnected" in state_conn
+            or "network_access" in state_conn
+            or "exiting" in state_conn
         ):
             sleep(0.1)
 
         logging.info("".join(output))
-        connected = "connected" in self.get_state(vpn_name).lower()
+        state = self.get_state(vpn_name).lower()
+        connected = "connected" in state or "network_access" in state
         return {"connected": connected, "reason": "VPN Error", "log": output}
 
     def connect(self, creds: dict) -> (bool, dict):
         print("~ Resetting connection")
-        self.reset()
+        try:
+            self.reset()
+        except subprocess.CalledProcessError:
+            print("Launching Tunnelblick")
+            subprocess.check_output(
+                [self.get_default_cli_path(), "launch"]
+            )
 
         try:
             stat = self.__connect(creds["VPN Name"])
