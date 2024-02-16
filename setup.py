@@ -29,7 +29,7 @@ setup(
     install_requires=["wexpect==4.0.0; sys_platform == 'win32'",
                       "pexpect==4.8.0; sys_platform != 'win32'",
                       "click==8.1.3", "psutil==5.9.1; sys_platform == 'win32'",
-                      "psutil==5.9.4; sys_platform != 'win32'", "pyside6==6.3.1"],
+                      "psutil==5.9.4; sys_platform != 'win32'", "pyside6"],
     extras_require={
         "dev": ["black==22.*"],
     },
