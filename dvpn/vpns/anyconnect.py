@@ -28,6 +28,7 @@ class AnyConnectCLI(VpnCli):
     )
 
     cli_path_osx = Path("/opt/cisco/anyconnect/bin/vpn")
+    cli_path_osx_2 = Path("/opt/cisco/secureclient/bin/vpn")
 
     def get_state(self, name: str) -> str:
         stdout = subprocess.check_output([self.cli_path, "state", name]).decode()

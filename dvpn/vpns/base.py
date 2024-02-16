@@ -40,7 +40,10 @@ class VpnCli(metaclass=SingletonMeta):
     def get_default_cli_path(cls):
         if os.name == "nt":
             return str(cls.cli_path_win)
-        return str(cls.cli_path_osx)
+        if cls.cli_path_osx.exists():
+            return str(cls.cli_path_osx)
+        else:
+            return str(cls.cli_path_osx_2)
 
     @abc.abstractmethod
     def get_connected_vpn(self):

@@ -1,8 +1,6 @@
-import logging
 import os
 import subprocess
 import sys
-from pathlib import Path
 from time import sleep
 
 from dvpn.vpns.base import VpnCli
