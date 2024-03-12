@@ -87,7 +87,7 @@ class AnyConnectCLI(VpnCli):
         output = self.process_pipe.readlines()
 
         logging.info("".join(output))
-        connected = "connected" in "".join(output[-3:-1]).lower()
+        connected = "connected" in "".join(output).lower()
         return {"connected": connected, "reason": "VPN Error", "log": output}
 
     def connect(self, creds: dict) -> (bool, dict):
