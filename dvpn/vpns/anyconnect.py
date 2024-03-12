@@ -69,7 +69,7 @@ class AnyConnectCLI(VpnCli):
             command=self.cli_path,
             args=["connect", f"{host}"],
             encoding="utf-8",
-            timeout=15,
+            timeout=30,
         )
 
         print("     ... Waiting for VPN to complete its chores")

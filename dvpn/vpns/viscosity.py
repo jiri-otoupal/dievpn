@@ -51,7 +51,7 @@ class ViscosityCLI(VpnCli):
             command=self.cli_path if self.cli_path else self.get_default_cli_path(),
             args=["connect", f"{host}"],
             encoding="utf-8",
-            timeout=15,
+            timeout=30,
         )
         output = self.process_pipe.readline()
 
