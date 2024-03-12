@@ -3,6 +3,7 @@ from threading import Thread
 from time import sleep
 from typing import Iterable
 
+import click
 from PySide6.QtCore import (
     QObject,
     QCoreApplication,
@@ -174,8 +175,30 @@ class Bridge(QObject):
         self.changingVPNs.discard(vpn_name)
 
 
-def main():
-    secret_path.parent.mkdir(exist_ok=True)
+@click.group()
+def cli():
+    pass
+
+
+@cli.command(name="connect")
+@click.argument("host", nargs=1)
+def _connect(host):
+    bridge = Bridge()
+    vpn_conf = PublicVars()[host]
+    cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
+    connect(cli, vpn_conf["VPN Name"], bridge)
+
+
+@cli.command(name="disconnect")
+@click.argument("host", nargs=1)
+def _disconnect(host):
+    vpn_conf = PublicVars()[host]
+    cli = CLI_RESOLVE[vpn_conf["selectedVpn"]](vpn_conf["cliPath"])
+    cli.reset()
+
+
+@cli.command()
+def gui():
     qInstallMessageHandler(qt_message_handler)
     QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
@@ -193,6 +216,13 @@ def main():
     if not engine.rootObjects():
         sys.exit(-1)
     sys.exit(app.exec())
+
+
+def main():
+    secret_path.parent.mkdir(exist_ok=True)
+    if len(sys.argv) < 2:
+        gui()
+    cli()
 
 
 if __name__ == "__main__":
